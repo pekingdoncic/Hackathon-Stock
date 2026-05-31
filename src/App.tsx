@@ -1,10 +1,32 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
+import { stocks, sectors, type Stock } from './stocks'
 
 type MainView = 'learn' | 'room' | 'mine'
 type RoomView = 'lobby' | 'tavern' | 'market'
 type ModalView = 'news' | 'stocks' | 'stockDetail' | 'finale' | null
 type AgentKey = 'buffett' | 'duan' | 'feng'
+
+type Holding = {
+  shares: number
+  cost: number // 累计买入成本（用于计算盈亏）
+}
+
+type TradeLog = {
+  type: 'buy' | 'sell'
+  name: string
+  code: string
+  shares: number
+  amount: number
+}
+
+type Portfolio = {
+  cash: number
+  holdings: Record<string, Holding>
+  lastTrade: TradeLog | null
+}
+
+const INITIAL_CASH = 100000
 
 type Player = {
   id: string
@@ -18,26 +40,11 @@ type Player = {
   trend: number[]
 }
 
-type Stock = {
-  code: string
-  name: string
-  price: number
-  change: number
-  heat: number
-}
-
 const players: Player[] = [
   { id: 'p1', name: '张三', avatar: 'ZS', profit: -8.6, suspicion: 32, speech: '我没上头，我只是提前相信。', move: '追入量子科技，尾盘回撤 6.2%。', trend: [42, 46, 38, 31, 29] },
   { id: 'p2', name: '李四', avatar: 'LS', profit: 12.8, suspicion: 18, speech: '先别急着喊股神，收盘再说。', move: '减仓新能源车，避开午后跳水。', trend: [31, 36, 39, 48, 55] },
   { id: 'p3', name: '王五', avatar: 'WW', undercover: true, profit: 2.4, suspicion: 68, speech: '市场传闻嘛，听听就好。', move: '利好出现前建仓，追入后减仓。', trend: [34, 35, 34, 36, 37] },
   { id: 'p4', name: '赵六', avatar: 'ZL', profit: -14.2, suspicion: 25, speech: '这把我先把节目效果拉满。', move: '连续两日跟风，账户曲线跳水。', trend: [45, 39, 31, 25, 21] },
-]
-
-const stocks: Stock[] = [
-  { code: 'QTKJ', name: '量子科技', price: 31.42, change: 7.8, heat: 92 },
-  { code: 'AIXP', name: 'AI 芯片', price: 18.76, change: -3.6, heat: 74 },
-  { code: 'XNYC', name: '新能源车', price: 52.1, change: 2.9, heat: 61 },
-  { code: 'YYYL', name: '云游戏', price: 12.48, change: -1.4, heat: 46 },
 ]
 
 const news = [
@@ -86,7 +93,127 @@ function MiniChart({ values }: { values: number[] }) {
   )
 }
 
+type Candle = {
+  open: number
+  close: number
+  high: number
+  low: number
+  up: boolean
+}
+
+// 基于字符串生成稳定种子，保证同一只股票 K 线形态固定、不同股票各不相同
+function seedFrom(text: string) {
+  let h = 1779033703 ^ text.length
+  for (let i = 0; i < text.length; i++) {
+    h = Math.imul(h ^ text.charCodeAt(i), 3432918353)
+    h = (h << 13) | (h >>> 19)
+  }
+  return h >>> 0
+}
+
+// mulberry32：轻量可复现伪随机数生成器
+function makeRng(seed: number) {
+  let a = seed
+  return () => {
+    a |= 0
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+const VOL_LEVEL: Record<string, number> = {
+  低: 0.012,
+  中低: 0.018,
+  中: 0.026,
+  中高: 0.036,
+  高: 0.05,
+  极高: 0.075,
+}
+
+// 用随机游走生成合理的 OHLC 蜡烛序列：
+// - 波动幅度由 volatility 档位决定
+// - 整体趋势方向与当日涨跌 change 挂钩
+// - 末根收盘价对齐到当前价 price
+function buildCandles(stock: Stock, count = 22): Candle[] {
+  const rng = makeRng(seedFrom(stock.code))
+  const vol = VOL_LEVEL[stock.volatility] ?? 0.03
+  // 反推起点：当日涨跌为正说明这段时间总体在涨，从更低位起步
+  const drift = (stock.change / 100) / count
+  let price = stock.price / (1 + stock.change / 100)
+  if (!Number.isFinite(price) || price <= 0) price = stock.price
+
+  const candles: Candle[] = []
+  for (let i = 0; i < count; i++) {
+    const open = price
+    // 单根随机游走 + 趋势漂移
+    const shock = (rng() - 0.5) * 2 * vol
+    let close = open * (1 + drift + shock)
+    if (close <= 0) close = open * 0.97
+    const body = Math.abs(close - open)
+    // 影线长度，随机但不超过实体的合理倍数
+    const upWick = (rng() * 0.6 + 0.1) * (body + open * vol * 0.5)
+    const downWick = (rng() * 0.6 + 0.1) * (body + open * vol * 0.5)
+    const high = Math.max(open, close) + upWick
+    const low = Math.max(0.01, Math.min(open, close) - downWick)
+    candles.push({ open, close, high, low, up: close >= open })
+    price = close
+  }
+  // 末根收盘对齐到真实价格，让图表与上方报价一致
+  const last = candles[candles.length - 1]
+  last.close = stock.price
+  last.up = last.close >= last.open
+  last.high = Math.max(last.high, last.open, last.close)
+  last.low = Math.min(last.low, last.open, last.close)
+  return candles
+}
+
+function CandleChart({ stock }: { stock: Stock }) {
+  const candles = useMemo(() => buildCandles(stock), [stock])
+  const max = Math.max(...candles.map((c) => c.high))
+  const min = Math.min(...candles.map((c) => c.low))
+  const span = max - min || 1
+  const pct = (v: number) => ((v - min) / span) * 100
+
+  return (
+    <div className="candles tall-candles">
+      {candles.map((c, index) => {
+        const bodyTop = pct(Math.max(c.open, c.close))
+        const bodyBottom = pct(Math.min(c.open, c.close))
+        return (
+          <span className={`candle ${c.up ? 'candle-up' : 'candle-down'}`} key={index}>
+            <i
+              className="candle-wick"
+              style={{ bottom: `${pct(c.low)}%`, height: `${pct(c.high) - pct(c.low)}%` }}
+            />
+            <i
+              className="candle-body"
+              style={{ bottom: `${bodyBottom}%`, height: `${Math.max(1.5, bodyTop - bodyBottom)}%` }}
+            />
+          </span>
+        )
+      })}
+    </div>
+  )
+}
+
 function RoomLobby({ startGame }: { startGame: () => void }) {
+  const [invited, setInvited] = useState(false)
+
+  const invite = async () => {
+    const code = 'GOD-531'
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(`房间码 ${code}，一起来玩《我不是股神》`)
+      }
+    } catch {
+      // 忽略剪贴板异常，仍给出反馈
+    }
+    setInvited(true)
+    window.setTimeout(() => setInvited(false), 2000)
+  }
+
   return (
     <main className="screen-body">
       <section className="cg-panel pixel-panel">
@@ -104,7 +231,7 @@ function RoomLobby({ startGame }: { startGame: () => void }) {
         <p>白天交易，晚上盘问。有人在赚钱，有人在带节奏。</p>
         <div className="hero-actions">
           <button className="primary-button" onClick={startGame} type="button">开启房间</button>
-          <button className="secondary-button" type="button">邀请好友</button>
+          <button className="secondary-button" onClick={invite} type="button">{invited ? '房间码已复制' : '邀请好友'}</button>
         </div>
       </section>
 
@@ -138,6 +265,8 @@ function RoomLobby({ startGame }: { startGame: () => void }) {
 
 function Tavern({ openModal }: { openModal: (view: ModalView) => void }) {
   const [selectedPlayer, setSelectedPlayer] = useState(players[2])
+  const [speaking, setSpeaking] = useState(false)
+  const [votedFor, setVotedFor] = useState<string | null>(null)
   const suspect = useMemo(() => [...players].sort((a, b) => b.suspicion - a.suspicion)[0], [])
 
   return (
@@ -169,7 +298,17 @@ function Tavern({ openModal }: { openModal: (view: ModalView) => void }) {
           ))}
         </div>
         <div className="voice-strip">
-          <button className="voice-button" type="button">按住发言</button>
+          <button
+            className={`voice-button ${speaking ? 'active' : ''}`}
+            type="button"
+            onMouseDown={() => setSpeaking(true)}
+            onMouseUp={() => setSpeaking(false)}
+            onMouseLeave={() => setSpeaking(false)}
+            onTouchStart={() => setSpeaking(true)}
+            onTouchEnd={() => setSpeaking(false)}
+          >
+            {speaking ? '正在发言…' : '按住发言'}
+          </button>
         </div>
       </section>
 
@@ -205,7 +344,9 @@ function Tavern({ openModal }: { openModal: (view: ModalView) => void }) {
           </div>
         </div>
         <div className="hero-actions">
-          <button className="primary-button" type="button">投他</button>
+          <button className="primary-button" type="button" onClick={() => setVotedFor(suspect.id)}>
+            {votedFor === suspect.id ? `已投 ${suspect.name}` : '投他'}
+          </button>
           <button className="secondary-button" onClick={() => openModal('finale')} type="button">终局</button>
         </div>
       </section>
@@ -235,23 +376,65 @@ function NewsPage() {
   )
 }
 
+const volClass = (v: string) => {
+  if (v === '极高' || v === '高') return 'vol-high'
+  if (v === '中高') return 'vol-mid'
+  return 'vol-low'
+}
+
 function StocksPage({ pickStock }: { pickStock: (stock: Stock) => void }) {
+  const [sector, setSector] = useState<string>('全部')
+  const list = useMemo(
+    () => (sector === '全部' ? stocks : stocks.filter((s) => s.sector === sector)),
+    [sector],
+  )
+
   return (
     <main className="screen-body immersive-body page-view">
       <section className="pixel-panel page-head">
         <h2>选股板块</h2>
-        <p>点击股票查看 K 线和买卖操作。</p>
+        <p>共 {stocks.length} 支个股，点击查看基本面、估值与公司动态。</p>
       </section>
+
+      <section className="pixel-panel sector-bar">
+        <div className="sector-tabs">
+          <button
+            className={sector === '全部' ? 'active' : ''}
+            onClick={() => setSector('全部')}
+            type="button"
+          >
+            全部
+          </button>
+          {sectors.map((name) => (
+            <button
+              className={sector === name ? 'active' : ''}
+              key={name}
+              onClick={() => setSector(name)}
+              type="button"
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className="pixel-panel stock-page-list">
-        {stocks.map((stock) => (
-          <button className="stock-row" key={stock.code} onClick={() => pickStock(stock)} type="button">
-            <span>
+        {list.map((stock) => (
+          <button className="stock-row stock-card" key={stock.code} onClick={() => pickStock(stock)} type="button">
+            <span className="stock-main">
               <b>{stock.name}</b>
-              <small>{stock.code}</small>
+              <small>{stock.realName} · {stock.sector}</small>
+              <span className="stock-meta">
+                <em className={`vol-chip ${volClass(stock.volatility)}`}>波动 {stock.volatility}</em>
+                <em className="heat-chip">热度 {stock.heat}</em>
+              </span>
             </span>
-            <strong className={stock.change > 0 ? 'rise' : 'fall'}>
-              {stock.change > 0 ? '+' : ''}{stock.change}%
-            </strong>
+            <span className="stock-quote">
+              <strong className={stock.change > 0 ? 'rise' : 'fall'}>
+                {stock.change > 0 ? '+' : ''}{stock.change}%
+              </strong>
+              <small>{stock.price.toFixed(2)}</small>
+            </span>
           </button>
         ))}
       </section>
@@ -259,34 +442,189 @@ function StocksPage({ pickStock }: { pickStock: (stock: Stock) => void }) {
   )
 }
 
-function StockDetail({ stock, back }: { stock: Stock; back: () => void }) {
+function StockDetail({
+  stock,
+  back,
+  portfolio,
+  onTrade,
+}: {
+  stock: Stock
+  back: () => void
+  portfolio: Portfolio
+  onTrade: (stock: Stock, type: 'buy' | 'sell', shares: number) => string
+}) {
+  const [shares, setShares] = useState(100)
+  const [tip, setTip] = useState<string | null>(null)
+
+  const holding = portfolio.holdings[stock.code]
+  const heldShares = holding ? holding.shares : 0
+  const avgCost = holding && holding.shares > 0 ? holding.cost / holding.shares : 0
+  const marketValue = heldShares * stock.price
+  const profit = heldShares > 0 ? marketValue - holding!.cost : 0
+  const profitPct = heldShares > 0 && holding!.cost > 0 ? (profit / holding!.cost) * 100 : 0
+
+  const cost = shares * stock.price
+  const maxBuy = Math.floor(portfolio.cash / stock.price)
+
+  const adjust = (delta: number) => setShares((v) => Math.max(0, v + delta))
+
+  const trade = (type: 'buy' | 'sell') => {
+    if (shares <= 0) {
+      setTip('请先输入买入/卖出股数')
+      window.setTimeout(() => setTip(null), 1800)
+      return
+    }
+    const msg = onTrade(stock, type, shares)
+    setTip(msg)
+    window.setTimeout(() => setTip(null), 2200)
+  }
+
+  const newsTones = ['up', 'watch', 'down']
+
   return (
     <main className="screen-body immersive-body page-view">
       <section className="pixel-panel page-head">
         <button className="text-link" onClick={back} type="button">返回选股</button>
         <h2>{stock.name}</h2>
+        <p>{stock.realName} · {stock.sector}</p>
       </section>
+
       <section className="pixel-panel detail-panel">
         <div className="section-title">
           <span>K 线</span>
-          <b>{stock.price.toFixed(2)}</b>
+          <b className={stock.change > 0 ? 'rise' : 'fall'}>
+            {stock.price.toFixed(2)} ({stock.change > 0 ? '+' : ''}{stock.change}%)
+          </b>
         </div>
-        <div className="candles tall-candles">
-          {Array.from({ length: 22 }).map((_, index) => (
-            <i key={index} style={{ height: `${24 + ((index * 11 + stock.heat) % 66)}px` }} />
-          ))}
+        <CandleChart stock={stock} />
+        <div className="stat-grid">
+          <div className="stat-cell">
+            <small>波动</small>
+            <b className={volClass(stock.volatility)}>{stock.volatility}</b>
+          </div>
+          <div className="stat-cell">
+            <small>估值风险</small>
+            <b>{stock.risk}</b>
+          </div>
+          <div className="stat-cell">
+            <small>热度</small>
+            <b>{stock.heat}</b>
+          </div>
         </div>
+        <div className="position-row">
+          <div className="position-cell">
+            <small>持仓股数</small>
+            <b>{heldShares} 股</b>
+          </div>
+          <div className="position-cell">
+            <small>成本价</small>
+            <b>{avgCost > 0 ? avgCost.toFixed(2) : '—'}</b>
+          </div>
+          <div className="position-cell">
+            <small>持仓盈亏</small>
+            <b className={heldShares > 0 ? (profit >= 0 ? 'rise' : 'fall') : ''}>
+              {heldShares > 0 ? `${profit >= 0 ? '+' : ''}${profit.toFixed(0)} (${profitPct >= 0 ? '+' : ''}${profitPct.toFixed(1)}%)` : '—'}
+            </b>
+          </div>
+        </div>
+
+        <div className="trade-form">
+          <div className="shares-line">
+            <span className="shares-label">交易股数</span>
+            <div className="shares-control">
+              <button type="button" onClick={() => adjust(-100)}>-100</button>
+              <input
+                type="number"
+                min={0}
+                step={100}
+                value={shares}
+                onChange={(e) => setShares(Math.max(0, Number(e.target.value) || 0))}
+              />
+              <button type="button" onClick={() => adjust(100)}>+100</button>
+            </div>
+          </div>
+          <div className="shares-quick">
+            <button type="button" onClick={() => setShares(Math.min(maxBuy, 100))}>最少</button>
+            <button type="button" onClick={() => setShares(Math.floor(maxBuy / 2))}>半仓</button>
+            <button type="button" onClick={() => setShares(maxBuy)}>全仓</button>
+            <button type="button" onClick={() => setShares(heldShares)} disabled={heldShares === 0}>全部持仓</button>
+          </div>
+          <div className="trade-summary">
+            <span>预计金额 <b>{cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}</b></span>
+            <span>可用现金 <b>{portfolio.cash.toLocaleString(undefined, { maximumFractionDigits: 0 })}</b></span>
+          </div>
+        </div>
+
+        {tip && <p className="trade-tip">{tip}</p>}
         <div className="trade-actions">
-          <button className="primary-button" type="button">买入</button>
-          <button className="secondary-button" type="button">卖出</button>
+          <button className="primary-button" type="button" onClick={() => trade('buy')}>买入 {shares} 股</button>
+          <button className="secondary-button" type="button" onClick={() => trade('sell')} disabled={heldShares === 0}>卖出 {shares} 股</button>
+        </div>
+      </section>
+
+      <section className="pixel-panel info-panel">
+        <div className="section-title">
+          <span>公司基本面</span>
+          <b>{stock.realName}</b>
+        </div>
+        <p className="info-text">{stock.intro}</p>
+      </section>
+
+      <section className="pixel-panel info-panel">
+        <div className="section-title">
+          <span>盈利能力</span>
+        </div>
+        <p className="info-text">{stock.profit}</p>
+      </section>
+
+      <section className="pixel-panel info-panel">
+        <div className="section-title">
+          <span>估值逻辑</span>
+        </div>
+        <p className="info-text">{stock.valuation}</p>
+      </section>
+
+      <section className="pixel-panel info-panel">
+        <div className="section-title">
+          <span>相关动态</span>
+          <b>{stock.events.length} 条</b>
+        </div>
+        <div className="news-page-list">
+          {stock.events.map((event, index) => (
+            <article className={`news-card detail-news ${newsTones[index % newsTones.length]}`} key={event}>
+              <div>
+                <span className={`tag ${newsTones[index % newsTones.length]}`}>动态 · {stock.realName}</span>
+              </div>
+              <p>关注「{event}」对 {stock.name} 的影响，可能成为本局的价格触发点。</p>
+            </article>
+          ))}
         </div>
       </section>
     </main>
   )
 }
 
-function WalletFloat() {
+function WalletFloat({ portfolio }: { portfolio: Portfolio }) {
   const [open, setOpen] = useState(false)
+
+  const positions = useMemo(
+    () =>
+      Object.entries(portfolio.holdings)
+        .filter(([, h]) => h.shares > 0)
+        .map(([code, h]) => {
+          const stock = stocks.find((s) => s.code === code)
+          const value = stock ? h.shares * stock.price : 0
+          const pnl = value - h.cost
+          return { code, name: stock?.name ?? code, shares: h.shares, value, pnl }
+        })
+        .sort((a, b) => b.value - a.value),
+    [portfolio.holdings],
+  )
+
+  const positionValue = positions.reduce((sum, p) => sum + p.value, 0)
+  const total = portfolio.cash + positionValue
+  const totalPnl = total - INITIAL_CASH
+  const totalPct = (totalPnl / INITIAL_CASH) * 100
 
   return (
     <>
@@ -297,18 +635,50 @@ function WalletFloat() {
         <section className="wallet-popover pixel-panel">
           <div className="section-title">
             <span>我的钱包</span>
-            <b>记录</b>
+            <b className={totalPnl >= 0 ? 'rise' : 'fall'}>
+              {totalPnl >= 0 ? '+' : ''}{totalPct.toFixed(1)}%
+            </b>
           </div>
-        <div className="wallet-grid">
-          <span>持仓</span>
-          <strong>QTKJ 40%</strong>
-          <span>现金</span>
-          <strong>48,200</strong>
-          <span>最近交易</span>
-          <strong>卖出 AIXP</strong>
-          <span>今日收益</span>
-          <strong className="rise">+2.8%</strong>
-        </div>
+          <div className="wallet-grid">
+            <span>总资产</span>
+            <strong>{total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+            <span>现金</span>
+            <strong>{portfolio.cash.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+            <span>持仓市值</span>
+            <strong>{positionValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+            <span>累计盈亏</span>
+            <strong className={totalPnl >= 0 ? 'rise' : 'fall'}>
+              {totalPnl >= 0 ? '+' : ''}{totalPnl.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </strong>
+            <span>最近交易</span>
+            <strong>
+              {portfolio.lastTrade
+                ? `${portfolio.lastTrade.type === 'buy' ? '买入' : '卖出'} ${portfolio.lastTrade.name} ${portfolio.lastTrade.shares}股`
+                : '暂无'}
+            </strong>
+          </div>
+
+          <div className="wallet-positions">
+            <div className="wallet-positions-head">当前持仓</div>
+            {positions.length === 0 ? (
+              <p className="wallet-empty">尚无持仓，去选股买入吧。</p>
+            ) : (
+              positions.map((p) => (
+                <div className="wallet-pos-row" key={p.code}>
+                  <span className="wallet-pos-name">
+                    <b>{p.name}</b>
+                    <small>{p.shares} 股</small>
+                  </span>
+                  <span className="wallet-pos-val">
+                    <b>{p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</b>
+                    <small className={p.pnl >= 0 ? 'rise' : 'fall'}>
+                      {p.pnl >= 0 ? '+' : ''}{p.pnl.toFixed(0)}
+                    </small>
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
         </section>
       )}
     </>
@@ -317,6 +687,20 @@ function WalletFloat() {
 
 function FinalePage({ back }: { back: () => void }) {
   const podium = [...players].sort((a, b) => b.profit - a.profit).slice(0, 3)
+  const [shared, setShared] = useState(false)
+
+  const generateCard = async () => {
+    const summary = '《我不是股神》本局卧底：王五。股神：李四 +12.8%。'
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(summary)
+      }
+    } catch {
+      // 忽略剪贴板异常
+    }
+    setShared(true)
+    window.setTimeout(() => setShared(false), 2000)
+  }
 
   return (
     <main className="screen-body immersive-body page-view">
@@ -346,7 +730,7 @@ function FinalePage({ back }: { back: () => void }) {
       <section className="pixel-panel share-card">
         <h3>本局卧底：王五</h3>
         <p>经典名场面：赵六第 3 天满仓追高，成功把自己送上韭菜榜。</p>
-        <button className="primary-button full" type="button">生成分享卡</button>
+        <button className="primary-button full" type="button" onClick={generateCard}>{shared ? '已复制分享文案' : '生成分享卡'}</button>
       </section>
     </main>
   )
@@ -408,7 +792,21 @@ function Learn() {
 function AgentDock() {
   const [open, setOpen] = useState(false)
   const [agent, setAgent] = useState<AgentKey>('feng')
+  const [draft, setDraft] = useState('')
+  const [messages, setMessages] = useState<{ id: number; role: 'user' | 'agent'; text: string }[]>([])
   const current = agents[agent]
+
+  const sendMessage = () => {
+    const text = draft.trim()
+    if (!text) return
+    const base = Date.now()
+    setMessages((prev) => [
+      ...prev,
+      { id: base, role: 'user', text },
+      { id: base + 1, role: 'agent', text: `${current.name}：${current.line}` },
+    ])
+    setDraft('')
+  }
 
   return (
     <>
@@ -440,11 +838,25 @@ function AgentDock() {
             <p className="agent-bubble">{current.line}</p>
             <p className="user-bubble">这条市场传闻能信吗？</p>
             <p className="agent-bubble">先别急着信。看谁在消息出现前动过手，再看谁最想让大家追进去。</p>
+            {messages.map((message) => (
+              <p className={message.role === 'user' ? 'user-bubble' : 'agent-bubble'} key={message.id}>{message.text}</p>
+            ))}
           </div>
 
-          <form className="chat-input">
-            <input aria-label="输入问题" placeholder="问智囊团一句..." />
-            <button type="button">发送</button>
+          <form
+            className="chat-input"
+            onSubmit={(event) => {
+              event.preventDefault()
+              sendMessage()
+            }}
+          >
+            <input
+              aria-label="输入问题"
+              placeholder="问智囊团一句..."
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+            />
+            <button type="submit">发送</button>
           </form>
         </div>
       )}
@@ -458,6 +870,55 @@ function App() {
   const [modalView, setModalView] = useState<ModalView>(null)
   const [selectedStock, setSelectedStock] = useState(stocks[0])
   const [secondsLeft, setSecondsLeft] = useState(5 * 60)
+  const [portfolio, setPortfolio] = useState<Portfolio>({
+    cash: INITIAL_CASH,
+    holdings: {},
+    lastTrade: null,
+  })
+
+  const handleTrade = (stock: Stock, type: 'buy' | 'sell', shares: number): string => {
+    let message = ''
+    setPortfolio((prev) => {
+      const held = prev.holdings[stock.code] ?? { shares: 0, cost: 0 }
+      if (type === 'buy') {
+        const amount = shares * stock.price
+        if (amount > prev.cash) {
+          message = `现金不足，最多可买 ${Math.floor(prev.cash / stock.price)} 股`
+          return prev
+        }
+        message = `已买入 ${stock.name} ${shares} 股`
+        return {
+          cash: prev.cash - amount,
+          holdings: {
+            ...prev.holdings,
+            [stock.code]: { shares: held.shares + shares, cost: held.cost + amount },
+          },
+          lastTrade: { type, name: stock.name, code: stock.code, shares, amount },
+        }
+      }
+      // sell
+      if (shares > held.shares) {
+        message = `持仓不足，当前仅持有 ${held.shares} 股`
+        return prev
+      }
+      const amount = shares * stock.price
+      const avg = held.shares > 0 ? held.cost / held.shares : 0
+      const remainShares = held.shares - shares
+      const newHoldings = { ...prev.holdings }
+      if (remainShares > 0) {
+        newHoldings[stock.code] = { shares: remainShares, cost: avg * remainShares }
+      } else {
+        delete newHoldings[stock.code]
+      }
+      message = `已卖出 ${stock.name} ${shares} 股`
+      return {
+        cash: prev.cash + amount,
+        holdings: newHoldings,
+        lastTrade: { type, name: stock.name, code: stock.code, shares, amount },
+      }
+    })
+    return message
+  }
 
   const inRoom = mainView === 'room' && roomView !== 'lobby'
   const closeModal = () => setModalView(null)
@@ -480,7 +941,16 @@ function App() {
         {inRoom && modalView !== 'finale' && (
           <div className="room-top">
             <nav className="room-subnav" aria-label="局内导航">
-              <button className={roomView === 'tavern' ? 'active' : ''} onClick={() => setRoomView('tavern')} type="button">小酒馆</button>
+              <button
+                className={roomView === 'tavern' && !modalView ? 'active' : ''}
+                onClick={() => {
+                  setRoomView('tavern')
+                  setModalView(null)
+                }}
+                type="button"
+              >
+                小酒馆
+              </button>
               <button
                 className={roomView === 'market' ? 'active' : ''}
                 onClick={() => {
@@ -513,22 +983,21 @@ function App() {
           />
         )}
         {inRoom && roomView === 'market' && modalView === 'news' && <NewsPage />}
-        {inRoom && modalView === 'stocks' && (
-          <StocksPage
-            pickStock={(stock) => {
-              setSelectedStock(stock)
-              setModalView('stockDetail')
-            }}
+        {inRoom && modalView === 'stockDetail' && (
+          <StockDetail
+            stock={selectedStock}
+            back={() => setModalView('stocks')}
+            portfolio={portfolio}
+            onTrade={handleTrade}
           />
         )}
-        {inRoom && modalView === 'stockDetail' && <StockDetail stock={selectedStock} back={() => setModalView('stocks')} />}
         {inRoom && modalView === 'finale' && <FinalePage back={closeModal} />}
         {inRoom && roomView === 'market' && modalView !== 'finale' && (
           <>
-            <WalletFloat />
+            <WalletFloat portfolio={portfolio} />
             <nav className="market-bottom-nav" aria-label="交易所板块">
               <button className={modalView === 'news' ? 'active' : ''} onClick={() => setModalView('news')} type="button">新闻</button>
-              <button className={modalView !== 'news' ? 'active' : ''} onClick={() => setModalView('stocks')} type="button">选股</button>
+              <button className={modalView === 'stocks' || modalView === 'stockDetail' || modalView === null ? 'active' : ''} onClick={() => setModalView('stocks')} type="button">选股</button>
             </nav>
           </>
         )}

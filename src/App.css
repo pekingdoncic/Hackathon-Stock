@@ -149,7 +149,9 @@ button,
 
 .immersive-body {
   height: calc(100% - 110px);
-  padding: 8px 10px 10px;
+  padding: 8px 10px 64px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .page-view {
@@ -299,11 +301,133 @@ p {
   margin-top: 10px;
 }
 
+.trade-tip {
+  margin: 10px 0 0;
+  padding: 6px 10px;
+  font-size: 12px;
+  text-align: center;
+  color: #9fe6b4;
+  border: 1px solid rgba(159, 230, 180, 0.4);
+  border-radius: 6px;
+  background: rgba(159, 230, 180, 0.08);
+}
+
+/* === 持仓概览（详情页内） === */
+.position-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.position-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 6px;
+  border: 1px solid rgba(255, 46, 185, 0.22);
+  background: rgba(20, 4, 26, 0.5);
+}
+
+.position-cell small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.position-cell b {
+  font-size: 12px;
+}
+
+/* === 交易股数表单 === */
+.trade-form {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(37, 229, 255, 0.22);
+  background: rgba(6, 2, 16, 0.42);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shares-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.shares-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.shares-control {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.shares-control button {
+  width: 40px;
+  font-size: 11px;
+  color: var(--cyan);
+  border: 1px solid rgba(37, 229, 255, 0.4);
+  background: rgba(37, 229, 255, 0.06);
+  cursor: pointer;
+}
+
+.shares-control input {
+  width: 84px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--paper);
+  border: 1px solid rgba(37, 229, 255, 0.4);
+  background: rgba(6, 2, 16, 0.6);
+  font-family: inherit;
+  padding: 4px 2px;
+}
+
+.shares-quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.shares-quick button {
+  font-size: 10px;
+  padding: 4px 2px;
+  color: var(--muted);
+  border: 1px solid rgba(184, 164, 200, 0.32);
+  background: rgba(6, 2, 16, 0.42);
+  cursor: pointer;
+}
+
+.shares-quick button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.trade-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.trade-summary b {
+  color: var(--paper);
+}
+
 .primary-button,
 .secondary-button {
   min-height: 34px;
   border: 2px solid var(--magenta);
   font-size: 11px;
+}
+
+.secondary-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .primary-button {
@@ -647,6 +771,152 @@ p {
   color: var(--muted);
 }
 
+/* === 选股板块筛选 === */
+.sector-bar {
+  padding: 8px;
+}
+
+.sector-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sector-tabs button {
+  padding: 5px 9px;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid rgba(37, 229, 255, 0.25);
+  background: rgba(6, 2, 16, 0.42);
+  cursor: pointer;
+}
+
+.sector-tabs button.active {
+  color: var(--black);
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+/* === 股票卡片 === */
+.stock-card {
+  align-items: stretch;
+  gap: 8px;
+}
+
+.stock-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stock-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.stock-meta em {
+  font-style: normal;
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid rgba(184, 164, 200, 0.35);
+  color: var(--muted);
+}
+
+.vol-chip.vol-high {
+  color: var(--magenta);
+  border-color: rgba(255, 46, 185, 0.5);
+}
+
+.vol-chip.vol-mid {
+  color: #ffcf6b;
+  border-color: rgba(255, 207, 107, 0.5);
+}
+
+.vol-chip.vol-low {
+  color: var(--cyan);
+  border-color: rgba(37, 229, 255, 0.5);
+}
+
+.heat-chip {
+  color: #d8a7ff;
+  border-color: rgba(216, 167, 255, 0.4);
+}
+
+.stock-quote {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.stock-quote small {
+  color: var(--muted);
+}
+
+.vol-high {
+  color: var(--magenta);
+}
+
+.vol-mid {
+  color: #ffcf6b;
+}
+
+.vol-low {
+  color: var(--cyan);
+}
+
+/* === 个股详情：统计与信息卡 === */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 4px;
+  border: 1px solid rgba(37, 229, 255, 0.2);
+  background: rgba(6, 2, 16, 0.42);
+}
+
+.stat-cell small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.stat-cell b {
+  font-size: 13px;
+}
+
+.info-panel .section-title {
+  margin-bottom: 6px;
+}
+
+.info-text {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--paper);
+  opacity: 0.92;
+}
+
+.detail-news {
+  min-height: auto;
+}
+
+.detail-news p {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
 .candles {
   height: 82px;
   display: flex;
@@ -663,13 +933,48 @@ p {
 
 .tall-candles {
   height: 270px;
-  gap: 6px;
+  gap: 4px;
 }
 
-.candles i {
-  width: 8px;
+.candle {
+  position: relative;
+  flex: 1 1 0;
+  height: 100%;
+  min-width: 4px;
+}
+
+.candle-wick {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+}
+
+.candle-body {
+  position: absolute;
+  left: 50%;
+  width: 70%;
+  transform: translateX(-50%);
+  border-radius: 1px;
+}
+
+.candle-up .candle-wick,
+.candle-up .candle-body {
+  background: var(--cyan);
+}
+
+.candle-up .candle-body {
+  box-shadow: 0 0 6px rgba(37, 229, 255, 0.45);
+}
+
+.candle-down .candle-wick,
+.candle-down .candle-body {
   background: var(--magenta);
-  box-shadow: 0 0 8px rgba(255, 46, 185, 0.4);
+}
+
+.candle-down .candle-body {
+  box-shadow: 0 0 6px rgba(255, 46, 185, 0.45);
 }
 
 .wallet-grid {
@@ -683,6 +988,66 @@ p {
 .wallet-grid strong {
   color: var(--paper);
   font-size: 13px;
+}
+
+/* === 钱包持仓列表 === */
+.wallet-positions {
+  margin-top: 10px;
+  border-top: 1px solid rgba(37, 229, 255, 0.18);
+  padding-top: 8px;
+}
+
+.wallet-positions-head {
+  font-size: 11px;
+  color: var(--cyan);
+  margin-bottom: 6px;
+}
+
+.wallet-empty {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.wallet-pos-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(184, 164, 200, 0.18);
+}
+
+.wallet-pos-row:last-child {
+  border-bottom: none;
+}
+
+.wallet-pos-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wallet-pos-name b {
+  font-size: 12px;
+  color: var(--paper);
+}
+
+.wallet-pos-name small,
+.wallet-pos-val small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.wallet-pos-val {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.wallet-pos-val b {
+  font-size: 12px;
+  color: var(--paper);
 }
 
 .tavern-stage {
@@ -926,6 +1291,9 @@ p {
 }
 
 .bottom-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 34px;
   padding: 0;
   border: 1px solid rgba(37, 229, 255, 0.22);
