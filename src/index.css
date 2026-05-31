@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=ZCOOL+KuaiLe&display=swap');
+
+:root {
+  --black: #05020a;
+  --panel: #24103a;
+  --panel-deep: #160720;
+  --magenta: #ff2eb9;
+  --cyan: #25e5ff;
+  --paper: #fff4ff;
+  --muted: #b8a4c8;
+  --pixel: 'Press Start 2P', 'ZCOOL KuaiLe', system-ui, sans-serif;
+  --sans: 'ZCOOL KuaiLe', system-ui, sans-serif;
+  color: var(--paper);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 46, 185, 0.14), transparent 34%),
+    radial-gradient(circle at 80% 70%, rgba(37, 229, 255, 0.08), transparent 28%),
+    var(--black);
+  font-family: var(--sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100svh;
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100svh;
+}
