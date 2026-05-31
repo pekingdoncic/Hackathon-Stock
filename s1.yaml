@@ -1,0 +1,58 @@
+- generic [ref=e4]:
+  - main [ref=e5]:
+    - generic [ref=e6]:
+      - text: 今晚开局
+      - heading "市场里混进了一个会讲故事的人" [level=2] [ref=e7]
+      - paragraph [ref=e8]: 真实新闻、市场传闻和朋友的判断，都会改变这一局的走向。
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: 熟人房间
+        - strong [ref=e12]: GOD-531
+      - heading "我不是股神" [level=1] [ref=e13]
+      - paragraph [ref=e14]: 白天交易，晚上盘问。有人在赚钱，有人在带节奏。
+      - generic [ref=e15]:
+        - button "开启房间" [ref=e16] [cursor=pointer]
+        - button "邀请好友" [ref=e17] [cursor=pointer]
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: 局型
+        - generic [ref=e21]: 5-8 人
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - strong [ref=e24]: "5"
+          - text: 回合
+        - generic [ref=e25]:
+          - strong [ref=e26]: "1"
+          - text: 卧底
+        - generic [ref=e27]:
+          - strong [ref=e28]: "2"
+          - text: 假消息
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]: 今日流程
+        - generic [ref=e32]: 轻策略
+      - generic [ref=e33]:
+        - generic [ref=e34]: "01"
+        - generic [ref=e35]: 邀请入局
+      - generic [ref=e36]:
+        - generic [ref=e37]: "02"
+        - generic [ref=e38]: 暗发身份
+      - generic [ref=e39]:
+        - generic [ref=e40]: "03"
+        - generic [ref=e41]: 白天交易
+      - generic [ref=e42]:
+        - generic [ref=e43]: "04"
+        - generic [ref=e44]: 夜晚发言
+      - generic [ref=e45]:
+        - generic [ref=e46]: "05"
+        - generic [ref=e47]: 投嫌疑票
+      - generic [ref=e48]:
+        - generic [ref=e49]: "06"
+        - generic [ref=e50]: 终局揭晓
+  - navigation "主导航" [ref=e51]:
+    - button "学习" [ref=e52] [cursor=pointer]
+    - button "开启房间" [ref=e53] [cursor=pointer]
+    - button "我的" [ref=e54] [cursor=pointer]
+  - button "打开智囊团" [ref=e55] [cursor=pointer]:
+    - generic [ref=e56]: AI
+    - generic [ref=e57]: 智囊团
