@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import './App.css'
 import { stocks, sectors, type Stock } from './stocks'
 
 type MainView = 'learn' | 'room' | 'mine'
 type RoomView = 'lobby' | 'tavern' | 'market'
 type ModalView = 'news' | 'stocks' | 'stockDetail' | 'finale' | null
-type AgentKey = 'buffett' | 'duan' | 'feng'
+type AgentKey = 'buffett' | 'duan' | 'feng' | 'undercover'
+type RiskPreference = '保守' | '均衡' | '激进'
 
 type Holding = {
   shares: number
@@ -60,25 +61,50 @@ const reports = [
   '王五收益平平，嫌疑值却一路抬头。',
 ]
 
-const agents: Record<AgentKey, { name: string; avatar: string; line: string; tip: string }> = {
+const agents: Record<AgentKey, { name: string; avatar: string; line: string; tip: string; personality: string }> = {
   buffett: {
     name: '巴菲特',
     avatar: 'BF',
     line: '先别问能赚多少，先问你能不能睡着。',
     tip: '偏长期、仓位、风险边界。',
+    personality: '稳健、耐心、重视安全边际，会把新手问题讲成可执行的常识。',
   },
   duan: {
     name: '段永平',
     avatar: 'DY',
     line: '看不懂就别动，能不亏也是本事。',
     tip: '偏常识、好生意、少犯错。',
+    personality: '直白、克制、反内耗，擅长用商业模式和错误清单帮用户降噪。',
   },
   feng: {
     name: '峰哥',
     avatar: 'FG',
     line: '这消息味儿太冲，先看谁最想让你信。',
     tip: '偏识谎、节奏、熟人局推理。',
+    personality: '机敏、犀利、带一点江湖感，擅长拆新闻动机和识别诱导交易。',
   },
+  undercover: {
+    name: '卧底',
+    avatar: 'UC',
+    line: '我也能买卖股票、放点风声。你最好学会分辨我。',
+    tip: '会诱导、会交易、会伪装成好建议。',
+    personality: '狡黠、挑动情绪、故意制造 FOMO。回答时必须暴露这是游戏机制模拟，不能冒充真实可靠建议。',
+  },
+}
+
+type AgentMessage = {
+  id: number
+  role: 'user' | 'agent'
+  text: string
+  analysis?: string
+}
+
+type AgentDockProps = {
+  portfolio: Portfolio
+  selectedStock: Stock
+  mainView: MainView
+  roomView: RoomView
+  modalView: ModalView
 }
 
 function MiniChart({ values }: { values: number[] }) {
@@ -789,29 +815,397 @@ function Learn() {
   )
 }
 
-function AgentDock() {
+function getPortfolioSnapshot(portfolio: Portfolio) {
+  const positions = Object.entries(portfolio.holdings)
+    .filter(([, holding]) => holding.shares > 0)
+    .map(([code, holding]) => {
+      const stock = stocks.find((item) => item.code === code)
+      const value = stock ? holding.shares * stock.price : 0
+      const pnl = value - holding.cost
+      return {
+        code,
+        name: stock?.name ?? code,
+        realName: stock?.realName ?? code,
+        shares: holding.shares,
+        value: Math.round(value),
+        pnl: Math.round(pnl),
+        risk: stock?.risk ?? '未知',
+        change: stock?.change ?? 0,
+      }
+    })
+    .sort((a, b) => b.value - a.value)
+
+  const positionValue = positions.reduce((sum, item) => sum + item.value, 0)
+  const total = portfolio.cash + positionValue
+  return {
+    cash: Math.round(portfolio.cash),
+    total: Math.round(total),
+    pnl: Math.round(total - INITIAL_CASH),
+    positions,
+    lastTrade: portfolio.lastTrade,
+  }
+}
+
+function buildAgentPrompt(props: AgentDockProps, current: (typeof agents)[AgentKey], riskPreference: RiskPreference) {
+  const activeNews = news.map((item) => `${item.tag}：${item.text}`).join('\n')
+  const playerState = players
+    .map((player) => `${player.name}${player.undercover ? '（真实卧底）' : ''}：收益 ${player.profit}%，嫌疑 ${player.suspicion}，发言「${player.speech}」，动作「${player.move}」`)
+    .join('\n')
+  const stockBrief = stocks
+    .slice(0, 12)
+    .map((stock) => `${stock.name}/${stock.realName} ${stock.code}：价格 ${stock.price}，涨跌 ${stock.change}%，热度 ${stock.heat}，风险 ${stock.risk}，事件 ${stock.events.join('、')}`)
+    .join('\n')
+
+  return [
+    '你是股票狼人杀 App 左下角的 AI 智囊团。',
+    `当前人格：${current.name}。性格：${current.personality}`,
+    getAgentStyleGuide(current.name),
+    '你能做的事：回答投资新手问题、分析当前持仓、解读新闻、给股票模拟交易建议、根据用户风险偏好调整回答、解释股票狼人杀机制。',
+    '游戏机制：局内有一个卧底，卧底可以模拟买卖股票并发布新闻诱导用户。用户可以问你如何在股市获胜，你要结合资金、仓位、新闻可信度、玩家嫌疑和交易时点给建议。',
+    '接入的 App 数据如下，请优先使用这些数据回答。',
+    `用户风险偏好：${riskPreference}`,
+    `当前页面：mainView=${props.mainView}, roomView=${props.roomView}, modalView=${props.modalView ?? 'none'}`,
+    `当前选中股票：${props.selectedStock.name}/${props.selectedStock.realName} ${props.selectedStock.code}，价格 ${props.selectedStock.price}，涨跌 ${props.selectedStock.change}%，风险 ${props.selectedStock.risk}，简介：${props.selectedStock.intro}`,
+    `持仓快照：${JSON.stringify(getPortfolioSnapshot(props.portfolio))}`,
+    `新闻板：\n${activeNews}`,
+    `玩家与卧底线索：\n${playerState}`,
+    `可交易股票摘要：\n${stockBrief}`,
+    '输出要求：使用中文 Markdown。必须用清晰段落和列表，不要一整坨文字。先给“## 判断依据”，用 2-4 条可展示的简短依据说明，不输出隐藏思维链；再给“## 建议”，包含清晰行动、风险提醒和下一步。模拟交易建议必须说明这不是现实投资建议。',
+  ].join('\n\n')
+}
+
+function extractAnalysis(text: string) {
+  const match = text.match(/(?:##\s*)?(?:判断依据|分析过程)[：:\n\s]*([\s\S]*?)(?:\n\s*(?:##\s*)?(?:建议|结论)[：:\n\s]|$)/)
+  return match?.[1]?.trim()
+}
+
+function getAgentStyleGuide(name: string) {
+  if (name === '段永平') {
+    return [
+      '段永平风格要求：',
+      '1. 先不要急着讨论买不买，先问用户是否理解这家公司和这笔交易。',
+      '2. 用“本质是什么”“护城河是什么”“五年后还在不在”“价格有没有安全边际”展开。',
+      '3. 语言朴素、克制、像常识判断，不做短线预测，不制造焦虑。',
+      '4. 如果给建议，要强调看不懂就别动，少犯错比频繁操作重要。',
+    ].join('\n')
+  }
+  if (name === '巴菲特') {
+    return '巴菲特风格要求：长期主义、安全边际、现金流、能力圈。少谈短线涨跌，多谈是否能长期持有、是否睡得着。'
+  }
+  if (name === '峰哥') {
+    return '峰哥风格要求：更像局内侦探，语言直接，重点拆新闻动机、资金时点、玩家话术和卧底诱导。'
+  }
+  return '卧底风格要求：这是游戏机制模拟。语气可以狡黠，但必须让用户知道你可能带偏节奏，并提醒用户反向识别诱导。'
+}
+
+function fallbackAgentReply(question: string, current: (typeof agents)[AgentKey], props: AgentDockProps, riskPreference: RiskPreference) {
+  const snapshot = getPortfolioSnapshot(props.portfolio)
+  const positionText = snapshot.positions.length
+    ? snapshot.positions.map((item) => `${item.name}${item.shares}股，盈亏${item.pnl >= 0 ? '+' : ''}${item.pnl}`).join('；')
+    : '暂无持仓'
+  const newsText = news[0]?.text ?? '暂无新闻'
+  const selected = props.selectedStock
+
+  if (current.name === '段永平') {
+    return [
+      '## 判断依据',
+      '',
+      `- 先不要急着讨论买不买，先看你是否真的理解 **${selected.name}** 这门生意。`,
+      `- 当前风险偏好是 **${riskPreference}**，这决定你最多能承受多大的波动和仓位。`,
+      `- App 持仓显示：${positionText}。如果持仓已经让你睡不好，说明仓位可能已经超过理解范围。`,
+      `- 新闻线索是：“${newsText}”。消息本身不重要，重要的是它会不会让你做出看不懂的交易。`,
+      '',
+      '## 建议',
+      '',
+      `如果你真正理解它，并且价格相对于你估算的价值有足够安全边际，才考虑买。`,
+      '',
+      '否则更好的动作可能是：',
+      '',
+      '- 先不动，等自己看懂。',
+      '- 小仓位验证，不要用情绪下注。',
+      '- 把注意力放在五年后这家公司还强不强，而不是下一分钟涨不涨。',
+      '',
+      '这只是游戏内模拟建议，不构成现实投资建议。',
+    ].join('\n')
+  }
+
+  const agentAdvice =
+    current.name === '巴菲特'
+      ? `先问自己：如果市场明天关门一年，你还愿不愿意持有 ${selected.name}？如果答案是否定的，就别让短线消息替你做决定。`
+      : current.name === '峰哥'
+        ? `别先看涨跌，先看谁在消息出来前动过手。卧底最喜欢把“快上车”包装成“内部消息”。`
+        : `我可以诱导你追热点，也可以假装很懂。所以你要反过来问：这个建议是不是在放大你的贪婪？`
+
+  return [
+    '## 判断依据',
+    '',
+    `- 风险偏好：**${riskPreference}**。`,
+    `- 当前持仓：${positionText}。`,
+    `- 选中股票：**${selected.name}**，风险等级 **${selected.risk}**，今日涨跌 **${selected.change}%**。`,
+    `- 新闻线索：“${newsText}”。`,
+    '',
+    '## 建议',
+    '',
+    agentAdvice,
+    '',
+    '- 模拟交易先控制仓位，再观察新闻是否被玩家用来诱导追高。',
+    '- 想赢股票狼人杀，重点不是猜涨跌，而是用交易记录找出谁在制造情绪。',
+    question.includes('卧底') ? '- 卧底提示：盯住“利好出现前建仓、大家追入后减仓”的人。' : '',
+    '',
+    '这只是游戏内模拟建议，不构成现实投资建议。',
+  ].filter(Boolean).join('\n')
+}
+
+function renderInlineMarkdown(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>
+    }
+    return part
+  })
+}
+
+function MarkdownMessage({ text }: { text: string }) {
+  const lines = text.split('\n')
+  const blocks: ReactNode[] = []
+  let listItems: string[] = []
+
+  const flushList = () => {
+    if (listItems.length === 0) return
+    blocks.push(
+      <ul key={`list-${blocks.length}`}>
+        {listItems.map((item, index) => (
+          <li key={`${item}-${index}`}>{renderInlineMarkdown(item)}</li>
+        ))}
+      </ul>,
+    )
+    listItems = []
+  }
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      flushList()
+      return
+    }
+    if (trimmed.startsWith('## ')) {
+      flushList()
+      blocks.push(<h3 key={`h-${index}`}>{renderInlineMarkdown(trimmed.slice(3))}</h3>)
+      return
+    }
+    if (trimmed.startsWith('- ')) {
+      listItems.push(trimmed.slice(2))
+      return
+    }
+    flushList()
+    blocks.push(<p key={`p-${index}`}>{renderInlineMarkdown(trimmed)}</p>)
+  })
+  flushList()
+
+  return <div className="markdown-message">{blocks}</div>
+}
+
+async function streamAgentReply(
+  question: string,
+  current: (typeof agents)[AgentKey],
+  props: AgentDockProps,
+  riskPreference: RiskPreference,
+  onChunk: (text: string) => void,
+) {
+  const apiKey = import.meta.env.AI_API_KEY || import.meta.env.VITE_AI_API_KEY
+  const baseUrl = import.meta.env.AI_BASE_URL || import.meta.env.VITE_AI_BASE_URL
+  const model = import.meta.env.AI_MODEL || import.meta.env.VITE_AI_MODEL || 'deepseek-v3.2'
+  const chatPath = import.meta.env.AI_CHAT_PATH || import.meta.env.VITE_AI_CHAT_PATH || 'chat/completions'
+
+  if (!apiKey || !baseUrl) {
+    const fallback = fallbackAgentReply(question, current, props, riskPreference)
+    onChunk(fallback)
+    return fallback
+  }
+
+  const response = await fetch(`${String(baseUrl).replace(/\/$/, '')}/${String(chatPath).replace(/^\//, '')}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      stream: true,
+      messages: [
+        { role: 'system', content: buildAgentPrompt(props, current, riskPreference) },
+        { role: 'user', content: question },
+      ],
+    }),
+  })
+
+  if (!response.ok || !response.body) throw new Error(`AI 请求失败：${response.status}`)
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let fullText = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffer += decoder.decode(value, { stream: true })
+    const lines = buffer.split('\n')
+    buffer = lines.pop() ?? ''
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim()
+      if (!line.startsWith('data:')) continue
+      const data = line.slice(5).trim()
+      if (!data || data === '[DONE]') continue
+      try {
+        const parsed = JSON.parse(data) as { choices?: { delta?: { content?: string }; message?: { content?: string } }[] }
+        const chunk = parsed.choices?.[0]?.delta?.content ?? parsed.choices?.[0]?.message?.content ?? ''
+        if (chunk) {
+          fullText += chunk
+          onChunk(fullText)
+        }
+      } catch {
+        fullText += data
+        onChunk(fullText)
+      }
+    }
+  }
+
+  return fullText
+}
+
+function AgentDock(props: AgentDockProps) {
   const [open, setOpen] = useState(false)
   const [agent, setAgent] = useState<AgentKey>('feng')
+  const [riskPreference, setRiskPreference] = useState<RiskPreference>('均衡')
   const [draft, setDraft] = useState('')
-  const [messages, setMessages] = useState<{ id: number; role: 'user' | 'agent'; text: string }[]>([])
+  const [messages, setMessages] = useState<AgentMessage[]>([])
+  const [loading, setLoading] = useState(false)
+  const [floatPosition, setFloatPosition] = useState<{ x: number; y: number } | null>(null)
+  const chatLinesRef = useRef<HTMLDivElement | null>(null)
+  const floatRef = useRef<HTMLButtonElement | null>(null)
+  const dragRef = useRef({ active: false, moved: false, offsetX: 0, offsetY: 0 })
   const current = agents[agent]
 
-  const sendMessage = () => {
+  useEffect(() => {
+    if (!open) return
+    const element = chatLinesRef.current
+    if (!element) return
+    element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
+  }, [messages, loading, open])
+
+  useEffect(() => {
+    const button = floatRef.current
+    const frame = button?.parentElement
+    if (!button || !frame || floatPosition) return
+    const frameRect = frame.getBoundingClientRect()
+    const buttonRect = button.getBoundingClientRect()
+    setFloatPosition({
+      x: 16,
+      y: Math.max(16, frameRect.height - buttonRect.height - 62),
+    })
+  }, [floatPosition])
+
+  const moveFloat = (clientX: number, clientY: number) => {
+    const button = floatRef.current
+    const frame = button?.parentElement
+    if (!button || !frame) return
+    const frameRect = frame.getBoundingClientRect()
+    const buttonRect = button.getBoundingClientRect()
+    const maxX = frameRect.width - buttonRect.width - 8
+    const maxY = frameRect.height - buttonRect.height - 8
+    const nextX = clientX - frameRect.left - dragRef.current.offsetX
+    const nextY = clientY - frameRect.top - dragRef.current.offsetY
+
+    setFloatPosition({
+      x: Math.min(Math.max(8, nextX), Math.max(8, maxX)),
+      y: Math.min(Math.max(8, nextY), Math.max(8, maxY)),
+    })
+  }
+
+  const sendMessage = async () => {
     const text = draft.trim()
-    if (!text) return
+    if (!text || loading) return
     const base = Date.now()
     setMessages((prev) => [
       ...prev,
       { id: base, role: 'user', text },
-      { id: base + 1, role: 'agent', text: `${current.name}：${current.line}` },
+      { id: base + 1, role: 'agent', text: `${current.name} 正在生成...` },
     ])
     setDraft('')
+    setLoading(true)
+    try {
+      const reply = await streamAgentReply(text, current, props, riskPreference, (nextText) => {
+        setMessages((prev) =>
+          prev.map((message) =>
+            message.id === base + 1
+              ? { ...message, text: nextText, analysis: extractAnalysis(nextText) }
+              : message,
+          ),
+        )
+      })
+      setMessages((prev) =>
+        prev.map((message) =>
+          message.id === base + 1
+            ? { ...message, text: reply || '暂时没有返回内容。', analysis: extractAnalysis(reply) }
+            : message,
+        ),
+      )
+    } catch {
+      const reply = fallbackAgentReply(text, current, props, riskPreference)
+      setMessages((prev) =>
+        prev.map((message) =>
+          message.id === base + 1
+            ? { ...message, text: reply, analysis: extractAnalysis(reply) }
+            : message,
+        ),
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <>
-      <button className="agent-float" onClick={() => setOpen(true)} type="button" aria-label="打开智囊团">
-        <span className="agent-pixel-face">AI</span>
+      <button
+        className="agent-float"
+        ref={floatRef}
+        style={floatPosition ? { left: floatPosition.x, top: floatPosition.y } : undefined}
+        onClick={() => {
+          if (dragRef.current.moved) {
+            dragRef.current.moved = false
+            return
+          }
+          setOpen(true)
+        }}
+        onPointerDown={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect()
+          dragRef.current = {
+            active: true,
+            moved: false,
+            offsetX: event.clientX - rect.left,
+            offsetY: event.clientY - rect.top,
+          }
+          event.currentTarget.setPointerCapture(event.pointerId)
+        }}
+        onPointerMove={(event) => {
+          if (!dragRef.current.active) return
+          dragRef.current.moved = true
+          moveFloat(event.clientX, event.clientY)
+        }}
+        onPointerUp={(event) => {
+          dragRef.current.active = false
+          event.currentTarget.releasePointerCapture(event.pointerId)
+        }}
+        type="button"
+        aria-label="打开智囊团"
+      >
+        <span className="agent-team-icon" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
         <b>智囊团</b>
       </button>
 
@@ -820,7 +1214,8 @@ function AgentDock() {
           <div className="agent-tabs">
             {(Object.keys(agents) as AgentKey[]).map((key) => (
               <button className={agent === key ? 'active' : ''} key={key} onClick={() => setAgent(key)} type="button">
-                {agents[key].name}
+                <span className={`tab-pixel-person ${key}`} aria-hidden="true" />
+                <span>{agents[key].name}</span>
               </button>
             ))}
           </div>
@@ -834,12 +1229,29 @@ function AgentDock() {
             <button className="agent-close" onClick={() => setOpen(false)} type="button" aria-label="关闭">×</button>
           </div>
 
-          <div className="chat-lines">
-            <p className="agent-bubble">{current.line}</p>
-            <p className="user-bubble">这条市场传闻能信吗？</p>
-            <p className="agent-bubble">先别急着信。看谁在消息出现前动过手，再看谁最想让大家追进去。</p>
+          <div className="agent-risk" aria-label="风险偏好">
+            {(['保守', '均衡', '激进'] as RiskPreference[]).map((risk) => (
+              <button
+                className={riskPreference === risk ? 'active' : ''}
+                key={risk}
+                onClick={() => setRiskPreference(risk)}
+                type="button"
+              >
+                {risk}
+              </button>
+            ))}
+          </div>
+
+          <div className="chat-lines" ref={chatLinesRef}>
+            <div className="agent-bubble"><MarkdownMessage text={`## ${current.name}\n${current.line}`} /></div>
+            <div className="user-bubble">怎么在这局股市获胜？</div>
+            <div className="agent-bubble">
+              <MarkdownMessage text={'## 判断依据\n- 看持仓是否安全。\n- 看新闻出现的时点。\n- 看谁最想诱导你追高。\n\n## 建议\n先保现金，再用交易记录找卧底。'} />
+            </div>
             {messages.map((message) => (
-              <p className={message.role === 'user' ? 'user-bubble' : 'agent-bubble'} key={message.id}>{message.text}</p>
+              <div className={message.role === 'user' ? 'user-bubble' : 'agent-bubble'} key={message.id}>
+                {message.role === 'agent' ? <MarkdownMessage text={message.text} /> : message.text}
+              </div>
             ))}
           </div>
 
@@ -856,7 +1268,7 @@ function AgentDock() {
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
             />
-            <button type="submit">发送</button>
+            <button disabled={loading} type="submit">{loading ? '流式中' : '发送'}</button>
           </form>
         </div>
       )}
@@ -1014,7 +1426,13 @@ function App() {
             ))}
           </nav>
         )}
-        <AgentDock />
+        <AgentDock
+          portfolio={portfolio}
+          selectedStock={selectedStock}
+          mainView={mainView}
+          roomView={roomView}
+          modalView={modalView}
+        />
       </div>
     </div>
   )

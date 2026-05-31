@@ -1309,37 +1309,68 @@ p {
 .agent-float {
   position: absolute;
   z-index: 12;
-  right: 16px;
-  bottom: 62px;
+  left: 16px;
+  top: auto;
+  bottom: auto;
   display: grid;
   justify-items: center;
   gap: 4px;
-  width: 70px;
-  min-height: 70px;
-  padding: 7px;
-  border: 2px solid var(--cyan);
-  background: rgba(6, 2, 16, 0.9);
+  width: 74px;
+  min-height: 68px;
+  padding: 7px 6px;
+  border: 0;
+  background: rgba(6, 2, 16, 0.72);
   color: var(--cyan);
   cursor: pointer;
-  box-shadow: 0 0 18px rgba(37, 229, 255, 0.28);
+  box-shadow: 0 0 14px rgba(37, 229, 255, 0.18);
+  touch-action: none;
+  user-select: none;
 }
 
 .phone-frame.immersive .agent-float {
-  bottom: 16px;
+  bottom: auto;
 }
 
-.agent-pixel-face {
-  width: 34px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  border: 2px solid var(--magenta);
+.agent-team-icon {
+  position: relative;
+  display: block;
+  width: 48px;
+  height: 34px;
+}
+
+.agent-team-icon span,
+.tab-pixel-person {
+  position: absolute;
+  width: 14px;
+  height: 18px;
   background:
-    linear-gradient(90deg, transparent 0 8px, rgba(255, 46, 185, 0.35) 8px 10px, transparent 10px 100%),
-    #12051d;
+    linear-gradient(currentColor 0 0) 4px 0 / 6px 6px no-repeat,
+    linear-gradient(currentColor 0 0) 2px 8px / 10px 8px no-repeat,
+    linear-gradient(currentColor 0 0) 0 12px / 14px 4px no-repeat,
+    linear-gradient(currentColor 0 0) 3px 16px / 3px 2px no-repeat,
+    linear-gradient(currentColor 0 0) 8px 16px / 3px 2px no-repeat;
+  image-rendering: pixelated;
+}
+
+.agent-team-icon span:nth-child(1) {
+  left: 3px;
+  top: 10px;
+  color: var(--cyan);
+  opacity: 0.82;
+}
+
+.agent-team-icon span:nth-child(2) {
+  left: 17px;
+  top: 4px;
   color: var(--magenta);
-  font-family: var(--pixel);
-  font-size: 9px;
+  transform: scale(1.22);
+}
+
+.agent-team-icon span:nth-child(3) {
+  right: 3px;
+  top: 10px;
+  color: #f6d84a;
+  opacity: 0.9;
 }
 
 .agent-float b {
@@ -1350,10 +1381,11 @@ p {
 .agent-chat {
   position: absolute;
   z-index: 20;
-  left: 14px;
-  right: 14px;
-  bottom: 76px;
-  padding: 9px;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  min-height: 100%;
+  padding: 14px;
   border: 2px solid var(--cyan);
   background:
     linear-gradient(180deg, rgba(36, 16, 58, 0.98), rgba(8, 2, 15, 0.98));
@@ -1363,23 +1395,29 @@ p {
 }
 
 .phone-frame.immersive .agent-chat {
-  bottom: 14px;
+  bottom: 0;
 }
 
 .agent-tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  margin-bottom: 8px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .agent-tabs button {
-  min-height: 28px;
+  display: grid;
+  grid-template-rows: 20px auto;
+  justify-items: center;
+  align-items: center;
+  gap: 2px;
+  min-height: 38px;
   border: 1px solid rgba(37, 229, 255, 0.26);
   background: rgba(6, 2, 16, 0.5);
   color: var(--muted);
   cursor: pointer;
-  font-size: 9px;
+  font-size: 10px;
+  line-height: 1.1;
 }
 
 .agent-tabs button.active {
@@ -1388,18 +1426,74 @@ p {
   color: #150318;
 }
 
+.tab-pixel-person {
+  position: relative;
+  display: block;
+  color: var(--cyan);
+}
+
+.tab-pixel-person.buffett {
+  color: #f6d84a;
+}
+
+.tab-pixel-person.duan {
+  color: #47f2a2;
+}
+
+.tab-pixel-person.feng {
+  color: var(--cyan);
+}
+
+.tab-pixel-person.undercover {
+  color: var(--magenta);
+}
+
+.agent-tabs button.active .tab-pixel-person {
+  color: #150318;
+}
+
 .agent-head {
   display: grid;
-  grid-template-columns: 38px 1fr 28px;
-  gap: 8px;
+  grid-template-columns: 44px 1fr 36px;
+  gap: 10px;
   align-items: center;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 46, 185, 0.22);
+}
+
+.agent-risk {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 10px 0 0;
+}
+
+.agent-risk button {
+  min-height: 34px;
+  border: 1px solid rgba(37, 229, 255, 0.24);
+  background: rgba(6, 2, 16, 0.54);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.agent-risk button.active {
+  border-color: var(--cyan);
+  color: #04151a;
+  background: var(--cyan);
 }
 
 .agent-head strong {
   color: var(--paper);
-  font-size: 13px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.agent-head p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .agent-avatar {
@@ -1408,27 +1502,53 @@ p {
 }
 
 .agent-close {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border: 1px solid rgba(255, 46, 185, 0.55);
   background: rgba(255, 46, 185, 0.08);
   color: var(--magenta);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .chat-lines {
   display: grid;
-  gap: 7px;
-  padding: 9px 0;
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  padding: 12px 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(37, 229, 255, 0.42) transparent;
+  scroll-behavior: smooth;
+}
+
+.chat-lines::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-lines::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-lines::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(37, 229, 255, 0.34);
+}
+
+.chat-lines::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 46, 185, 0.5);
 }
 
 .agent-bubble,
 .user-bubble {
-  max-width: 86%;
-  padding: 8px;
+  max-width: 92%;
+  padding: 10px 11px;
   border: 1px solid rgba(37, 229, 255, 0.24);
   background: rgba(6, 2, 16, 0.48);
+  color: var(--paper);
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .user-bubble {
@@ -1437,20 +1557,55 @@ p {
   color: var(--paper);
 }
 
+.markdown-message {
+  display: grid;
+  gap: 8px;
+}
+
+.markdown-message h3 {
+  margin: 0;
+  color: var(--cyan);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.markdown-message p {
+  margin: 0;
+}
+
+.markdown-message ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.markdown-message li {
+  padding-left: 2px;
+}
+
+.markdown-message strong {
+  color: var(--paper);
+  font-weight: 700;
+}
+
 .chat-input {
   display: grid;
-  grid-template-columns: 1fr 70px;
-  gap: 6px;
+  grid-template-columns: 1fr 76px;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(37, 229, 255, 0.2);
 }
 
 .chat-input input {
   min-width: 0;
-  height: 34px;
-  padding: 0 8px;
+  height: 42px;
+  padding: 0 10px;
   border: 1px solid rgba(37, 229, 255, 0.34);
   background: rgba(6, 2, 16, 0.68);
   color: var(--paper);
   outline: none;
+  font-size: 14px;
 }
 
 .chat-input button {
@@ -1458,7 +1613,12 @@ p {
   background: var(--magenta);
   color: #150318;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
+}
+
+.chat-input button:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 button:focus-visible {
