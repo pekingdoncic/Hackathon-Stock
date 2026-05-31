@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-labelledby="title desc">
+  <title id="title">我不是股神 产品海报</title>
+  <desc id="desc">像素霓虹风格的熟人局股票推理游戏产品海报。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#05020a"/>
+      <stop offset="0.42" stop-color="#160720"/>
+      <stop offset="1" stop-color="#061018"/>
+    </linearGradient>
+    <linearGradient id="hot" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff2eb9"/>
+      <stop offset="0.52" stop-color="#8b3dff"/>
+      <stop offset="1" stop-color="#25e5ff"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a1660" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#180824" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#25e5ff"/>
+      <stop offset="1" stop-color="#fff4ff"/>
+    </linearGradient>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse">
+      <path d="M54 0H0V54" fill="none" stroke="#25e5ff" stroke-opacity="0.07" stroke-width="2"/>
+    </pattern>
+    <pattern id="scan" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="1.5" fill="#fff4ff" opacity="0.075"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="24" stdDeviation="18" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+    <style>
+      .sans { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; }
+      .display { font-family: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif; font-weight: 900; }
+      .pixel { font-family: "Press Start 2P", "PingFang SC", "Microsoft YaHei", monospace; }
+      .muted { fill: #b8a4c8; }
+      .paper { fill: #fff4ff; }
+      .cyan { fill: #25e5ff; }
+      .magenta { fill: #ff2eb9; }
+      .panelStroke { stroke: #ff2eb9; stroke-width: 4; }
+      .cyanStroke { stroke: #25e5ff; stroke-width: 4; }
+      .thin { stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <rect width="1080" height="1920" fill="url(#grid)"/>
+  <circle cx="138" cy="150" r="250" fill="#ff2eb9" opacity="0.15"/>
+  <circle cx="990" cy="560" r="260" fill="#25e5ff" opacity="0.12"/>
+  <circle cx="170" cy="1530" r="290" fill="#8b3dff" opacity="0.12"/>
+
+  <g opacity="0.55">
+    <path d="M-20 420 C220 330 360 440 560 350 S895 210 1120 320" fill="none" stroke="#ff2eb9" stroke-opacity="0.5" stroke-width="5"/>
+    <path d="M-40 1330 C190 1240 380 1370 610 1275 S880 1170 1120 1240" fill="none" stroke="#25e5ff" stroke-opacity="0.42" stroke-width="4"/>
+  </g>
+
+  <g transform="translate(72 88)">
+    <rect x="0" y="0" width="936" height="108" rx="0" fill="#09030f" opacity="0.62" stroke="#25e5ff" stroke-opacity="0.36" stroke-width="2"/>
+    <text x="34" y="43" class="pixel cyan" font-size="20">STOCK UNDERCOVER PARTY</text>
+    <text x="34" y="83" class="sans muted" font-size="25">熟人局股票推理派对游戏</text>
+    <text x="864" y="50" class="pixel magenta" font-size="18" text-anchor="end">GOD-531</text>
+    <text x="864" y="84" class="sans paper" font-size="24" text-anchor="end">5-8 人开局</text>
+  </g>
+
+  <g transform="translate(72 250)">
+    <text x="0" y="88" class="display paper" font-size="124" letter-spacing="0">我不是股神</text>
+    <rect x="5" y="126" width="615" height="18" fill="url(#hot)" filter="url(#glow)"/>
+    <text x="0" y="208" class="display cyan" font-size="54">白天交易，晚上盘问</text>
+    <text x="0" y="270" class="sans paper" font-size="34">有人在赚钱，有人在带节奏。</text>
+    <text x="0" y="318" class="sans muted" font-size="28">真实新闻、市场传闻、朋友判断，全都会改变这一局。</text>
+  </g>
+
+  <g transform="translate(108 640)" filter="url(#softShadow)">
+    <g transform="rotate(-5 420 420)">
+      <rect x="146" y="0" width="520" height="890" rx="42" fill="#05020a" stroke="#ff2eb9" stroke-width="8"/>
+      <rect x="166" y="22" width="480" height="846" rx="28" fill="#0d0615" stroke="#25e5ff" stroke-opacity="0.45" stroke-width="3"/>
+      <rect x="190" y="56" width="432" height="84" fill="#160720" stroke="#25e5ff" stroke-opacity="0.36" stroke-width="2"/>
+      <text x="216" y="104" class="pixel cyan" font-size="18">ROUND 04</text>
+      <text x="526" y="106" class="pixel paper" font-size="28" text-anchor="end">04:37</text>
+
+      <rect x="190" y="168" width="432" height="185" fill="url(#panel)" stroke="#ff2eb9" stroke-width="4"/>
+      <text x="216" y="214" class="sans cyan" font-size="25">小酒馆</text>
+      <text x="216" y="267" class="display paper" font-size="38">AI 主持人开麦</text>
+      <text x="216" y="316" class="sans muted" font-size="25">谁先上车，谁又悄悄下车？</text>
+
+      <g transform="translate(190 380)">
+        <rect width="432" height="300" fill="#130820" stroke="#ff2eb9" stroke-opacity="0.82" stroke-width="4"/>
+        <text x="26" y="48" class="sans cyan" font-size="24">玩家发言</text>
+        <g transform="translate(26 78)">
+          <rect width="380" height="54" fill="#24103a" stroke="#25e5ff" stroke-opacity="0.35" stroke-width="2"/>
+          <circle cx="30" cy="27" r="18" fill="#25e5ff"/><text x="30" y="35" class="pixel" font-size="12" text-anchor="middle" fill="#05020a">LS</text>
+          <text x="64" y="35" class="sans paper" font-size="23">先别急着喊股神</text>
+          <polyline points="292,38 320,28 344,31 370,18" fill="none" stroke="#25e5ff" stroke-width="3"/>
+        </g>
+        <g transform="translate(26 148)">
+          <rect width="380" height="54" fill="#24103a" stroke="#ff2eb9" stroke-opacity="0.55" stroke-width="2"/>
+          <circle cx="30" cy="27" r="18" fill="#ff2eb9"/><text x="30" y="35" class="pixel" font-size="12" text-anchor="middle" fill="#05020a">WW</text>
+          <text x="64" y="35" class="sans paper" font-size="23">市场传闻嘛，听听就好</text>
+          <polyline points="292,28 322,30 344,24 370,31" fill="none" stroke="#ff2eb9" stroke-width="3"/>
+        </g>
+        <g transform="translate(26 218)">
+          <rect width="380" height="54" fill="#24103a" stroke="#25e5ff" stroke-opacity="0.25" stroke-width="2"/>
+          <circle cx="30" cy="27" r="18" fill="#8b3dff"/><text x="30" y="35" class="pixel" font-size="12" text-anchor="middle" fill="#fff4ff">ZL</text>
+          <text x="64" y="35" class="sans paper" font-size="23">我先把节目效果拉满</text>
+          <polyline points="292,19 322,34 344,39 370,45" fill="none" stroke="#b8a4c8" stroke-width="3"/>
+        </g>
+      </g>
+
+      <g transform="translate(190 706)">
+        <rect width="432" height="120" fill="#130820" stroke="#25e5ff" stroke-opacity="0.55" stroke-width="4"/>
+        <text x="26" y="42" class="sans cyan" font-size="24">交易所</text>
+        <g transform="translate(36 62)">
+          <rect x="0" y="34" width="12" height="34" fill="#25e5ff"/>
+          <rect x="36" y="12" width="12" height="56" fill="#ff2eb9"/>
+          <rect x="72" y="0" width="12" height="68" fill="#25e5ff"/>
+          <rect x="108" y="26" width="12" height="42" fill="#ff2eb9"/>
+          <rect x="144" y="16" width="12" height="52" fill="#25e5ff"/>
+          <rect x="180" y="44" width="12" height="24" fill="#ff2eb9"/>
+        </g>
+        <text x="390" y="76" class="pixel magenta" font-size="22" text-anchor="end">+7.8%</text>
+      </g>
+    </g>
+
+    <g transform="translate(600 472)">
+      <rect x="0" y="0" width="308" height="154" fill="#09030f" stroke="#25e5ff" stroke-width="4" filter="url(#glow)"/>
+      <text x="28" y="48" class="sans cyan" font-size="25">嫌疑值最高</text>
+      <text x="28" y="104" class="display paper" font-size="44">王五 68</text>
+      <path d="M238 34 L272 76 L238 118 L204 76 Z" fill="#ff2eb9" opacity="0.88"/>
+      <text x="238" y="86" class="pixel" font-size="18" fill="#05020a" text-anchor="middle">?</text>
+    </g>
+  </g>
+
+  <g transform="translate(72 1540)">
+    <rect x="0" y="0" width="936" height="154" fill="#09030f" opacity="0.74" stroke="#ff2eb9" stroke-width="4"/>
+    <text x="34" y="58" class="display paper" font-size="42">核心玩法</text>
+    <g class="sans" font-size="28">
+      <text x="34" y="112" fill="#25e5ff">■ 熟人开房</text>
+      <text x="252" y="112" fill="#ff2eb9">■ 真假消息</text>
+      <text x="470" y="112" fill="#25e5ff">■ 模拟交易</text>
+      <text x="688" y="112" fill="#ff2eb9">■ AI 智囊团</text>
+    </g>
+  </g>
+
+  <g transform="translate(72 1736)">
+    <text x="0" y="0" class="sans muted" font-size="28">每局 5 回合 ｜ 1 名卧底 ｜ 2 条假消息 ｜ 终局揭晓</text>
+    <text x="0" y="62" class="display cyan" font-size="48">市场里，最会讲故事的人最危险。</text>
+    <rect x="734" y="-40" width="202" height="202" fill="#fff4ff"/>
+    <g fill="#05020a">
+      <rect x="756" y="-18" width="46" height="46"/><rect x="820" y="-18" width="18" height="18"/><rect x="874" y="-18" width="40" height="40"/>
+      <rect x="756" y="46" width="18" height="56"/><rect x="792" y="64" width="46" height="18"/><rect x="856" y="46" width="18" height="74"/><rect x="892" y="64" width="22" height="22"/>
+      <rect x="756" y="128" width="46" height="46"/><rect x="820" y="128" width="18" height="18"/><rect x="856" y="146" width="58" height="28"/>
+      <rect x="820" y="20" width="18" height="18"/><rect x="874" y="100" width="40" height="18"/><rect x="792" y="100" width="18" height="18"/>
+    </g>
+    <text x="835" y="198" class="sans paper" font-size="24" text-anchor="middle">DEMO</text>
+  </g>
+
+  <rect width="1080" height="1920" fill="url(#scan)" opacity="0.72"/>
+  <rect x="22" y="22" width="1036" height="1876" fill="none" stroke="url(#hot)" stroke-width="6"/>
+  <rect x="42" y="42" width="996" height="1836" fill="none" stroke="#25e5ff" stroke-opacity="0.22" stroke-width="2"/>
+</svg>
