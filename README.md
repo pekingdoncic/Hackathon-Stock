@@ -1,73 +1,160 @@
-# React + TypeScript + Vite
+# 股票狼人杀
+🎩 谁是大富翁 (Who Is The Tycoon)
+熟人股票派对游戏：边玩边学投资，揪出隐藏的"假股神
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+</div>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+✨ 一句话看懂
+5-8 个朋友，5 天，100 万模拟资金，1 个卧底每天发假消息带节奏，AI 毒舌主持人每晚 8 点出"战报"找卧底——谁赚得多，谁又能揪出"假股神"？
 
-## React Compiler
+🎯 三大支柱
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🕹️ 模拟投资竞技 — 50 支真实美股 / 中概股，跟踪 A 股交易时段
+🕵️ 卧底玩法 — 假消息、隐藏黑金、阵营胜负
+🤖 AI 投资智囊团 — 巴菲特 / 段永平 / 彼得·林奇，7×24 陪聊
+🎨 像素风街机 UI — CRT 扫描线 + 霓虹紫粉，1990 终端感
+🤔 为什么做这个？
+痛点	我们的解法
+想学投资但不敢拿真钱入场	💸 100 万模拟资金，零风险体验市场波动
+投资群里大佬从不回消息	🤖 AI 智囊团 7×24 陪聊，像真人一样对话
+朋友圈都在晒收益，没人分享"怎么亏的"	🗣️ 熟人局 + AI 毒舌战报，输赢都能成社交谈资
+模拟盘玩法单一，跟单机似的	🕵️ 卧底假消息 + 反转战报，每局都不一样
+💡 核心洞察：没人会关心陌生人的收益率排行榜，但所有人都会关心——"我朋友今天又亏了多少？"
 
-## Expanding the ESLint configuration
+🎮 核心玩法：5 天 1 局
+⏰ 每日节奏
+时间	阶段	玩家行为
+9:00	📈 开盘	系统推送真实市场事件 + 股票池变化
+09:00-18:00	🛒 操作	玩家交易 / 查看新闻 / 卧底发假消息
+18:00	🔒 锁定	当日交易截止
+20:00	📊 战报	AI 毒舌总结 收益 + 异常线索
+20:00-22:00	🗳️ 质询投票	玩家投嫌疑票
+🎭 角色设定
+🟢 普通投资人 — 赚钱 + 找卧底
+🔴 卧底 — 每天 1-2 条假消息赚"黑金"，并隐藏身份
+🤖 AI 毒舌主持人 — 不是投资老师，是派对游戏主持人
+🏆 胜负判定
+阵营	胜利条件
+🟢 好人阵营	终局投出卧底 OR 卧底黑金 < 40（破坏不足）
+🔴 卧底阵营	成功逃脱 + 黑金 ≥ 40
+🔴 卧底惨胜	被投出但黑金 ≥ 80，赢家是"破坏王"
+⚪ 双败	识破卧底但已造成重大亏损
+设计原则：股票是数值系统，熟人关系才是乐趣核心。
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+✨ 特色功能
+🤖 AI 投资智囊团
+像聊天一样问巴菲特："茅台还能买吗？"
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+巴菲特： 先不要急着讨论买不买。 投资最重要的问题不是股价，而是你是否真正理解这家公司。 茅台本质上不是一家白酒公司。它更接近于一个拥有极强品牌垄断能力的消费品企业。 消费者购买茅台，并不只是购买酒精饮料…… 购买的是：社交价值 · 礼赠价值 · 收藏价值 · 身份象征。
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+专家	流派	适用场景
+🧓 巴菲特	价值投资派	长期持有 / 估值纠结
+🇨🇳 段永平	中国本土派	A 股 / 中概股估值
+🔍 彼得·林奇	现代派投资	寻找利可图机会
+💭 未来可拓展：用户可蒸馏自己成为"民间股神 Agent"
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🕵️ 卧底假消息机制
+每回合 1-2 条 假消息，混入真实市场消息流
+卧底不能控制涨跌，只能影响信息环境
+假消息类型：
+类型	示例	作用
+📢 公司动态	"星河能源即将获得大额订单"	诱导买入
+💸 资金流	"机构资金正在流入 AI 芯片板块"	诱导追热点
+⚠️ 利空传闻	"新能源板块出现监管风险"	诱导卖出
+🌪️ 情绪消息	"散户正在集中涌入游戏传媒板块"	制造跟风
+🎭 反向烟雾弹	"某股风险极高，不建议买入"	诱导别人错过上涨
+💰 黑金收益
+行为结果	卧底奖励
+假消息致玩家亏损	+10 黑金
+假消息致玩家错过上涨	+8 黑金
+单条假消息影响 ≥ 2 人	额外 +10
+玩家因假消息单日亏 > 5%	额外 +15
+当天无人怀疑卧底	+5 伪装分
+🤖 AI 毒舌主持人
+AI 不是投资老师，而是派对游戏主持人。 像 狼人杀法官 + 股评毒舌解说 一样存在。
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+毒舌示例
+🗣️ "张三今天这笔追高，不能说完全没判断，只能说判断和行情不太熟。"
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+🗣️ "李四嘴上说稳健，账户曲线像坐过山车，稳的是他的嘴。"
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🗣️ "王五今天没赚多少钱，但别人亏的时候他积分涨了，这事儿多少有点味儿。"
+
+🗣️ "赵六连续两天被消息带跑，建议下次先看消息，再看自己是不是又信了。"
+
+🕵️ 好人线索机制
+线索类型	AI 总结内容
+📊 行为异常	谁在关键消息出现前提前建仓/减仓
+💹 收益异常	账户表现平平但积分异常上升
+🕳️ 信息链	哪条假消息影响了哪个玩家
+
+
+╔═══════════════════════════════════════════════╗
+║ ▓▓▓  WHO IS THE TYCOON  ▓▓▓                  ║
+║ 9:25 OPEN · 100万 MOCK ¥ · DAY 3/5            ║
+╠═══════════════════════════════════════════════╣
+║ ▸ 苹果工坊   AAPL   ▲ +2.3%   185.6           ║
+║ ▸ 英伟达核心 NVDA   ▲ +5.1%   420.1           ║
+║ ▸ 腾讯企鹅   TCEHY  ▼ -0.8%    58.2           ║
+╠═══════════════════════════════════════════════╣
+║  YOUR ASSETS                                  ║
+║  Cash:  35.0万 │ Mkt:  68.2万                  ║
+║  P/L:   +3.2% ▲   Rank #3                     ║
+╚═══════════════════════════════════════════════╝
+
+📦 股票池
+50 支真实美股 + 中概股，分 7 大板块，每支股票都有完整的"游戏档案"。
+
+板块	数量	代表公司（游戏名）
+🌍 全球科技巨头	7	苹果工坊 / 微软魔法塔 / 谷歌图书馆
+🔧 AI 芯片与半导体	13	英伟达能量核心 / 台积电晶圆厂 / 光刻机神殿
+☁️ 企业软件与 AI 应用	11	雪花数据仓 / 帕兰提尔情报局 / 销售云旅馆
+🛡️ 网络安全要塞	5	云端守卫队 / 零信任护盾 / 帕洛防火墙
+🎬 消费科技与平台	6	奈飞影像城 / 哔哩像素剧场 / 优步出行车队
+🇨🇳 中国科技城	6	阿里云商会 / 百度搜索塔 / 拼多多集市
+🚗 中国新能源车	2	理想电动车厂 / 蔚来换电站
+每支股票都包含：基本面介绍 · 盈利能力 · 估值风险 · 波动性 · 适合触发的游戏事件。
+
+🛠️ 技术栈
+Vite 5        ⚡ 构建工具
+React 18      ⚛️  UI 框架
+TypeScript 5  🔷 类型系统
+iOS 规范      📱 移动端优先（电脑也能开）
+竖版完整前后端手机应用。
+
+🗺️ 路线图
+✅ 已完成
+ 冷启动 30 秒用户建档（4 道题匹配投资人格）
+ 投资人格分类：保守 / 稳健 / 价值投资 / 进取成长
+ 50 支股票池 + 7 大板块游戏档案
+ AI 智囊团基础 Agent（巴菲特 / 段永平 / 彼得·林奇）
+ 卧底身份机制 + 假消息系统
+ 5 日标准局游戏流程
+ AI 毒舌主持人战报
+ 像素风 UI 设计规范
+🚧 进行中
+ Vite + React + TypeScript 工程脚手架
+ 模拟撮合交易系统（跟踪 A 股交易时段）
+ 排行榜 / 净值曲线 / 归因弹窗
+ 终局投票 + 战报分享卡
+📅 下一步
+ 熟人房间 / 邀请好友 / 分享裂变
+ 选股讨论区
+ 投资工会（公会）系统
+ 角色 Hub — 蒸馏自己成为"民间股神"
+ 真实模拟盘行情接入
+🏃‍♂️ 快速开始
+# 1. 克隆项目
+git clone https://github.com/<your-org>/who-is-the-tycoon.git
+cd who-is-the-tycoon
+
+# 2. 安装依赖
+npm install
+
+# 3. 启动开发服务器
+npm run dev
+
+# 4. 浏览器打开（建议手机模式）
+# http://localhost:5173
+💡 推荐体验：Chrome DevTools → Toggle Device Toolbar → iPhone 14 Pro
