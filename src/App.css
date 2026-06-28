@@ -1639,3 +1639,1375 @@ button:focus-visible {
     box-shadow: none;
   }
 }
+
+/* Arcade gold-green skin */
+.app-shell {
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255, 220, 95, 0.16), transparent 28%),
+    radial-gradient(circle at 12% 24%, rgba(69, 226, 118, 0.08), transparent 18%),
+    linear-gradient(180deg, #020604 0%, #050b06 58%, #010201 100%);
+}
+
+.phone-frame {
+  border: 4px solid var(--gold);
+  border-radius: 24px;
+  background:
+    linear-gradient(rgba(255, 210, 70, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 210, 70, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 50% 8%, rgba(255, 217, 91, 0.13), transparent 25%),
+    radial-gradient(circle at 50% 92%, rgba(69, 226, 118, 0.08), transparent 35%),
+    linear-gradient(180deg, #07140c, #020705 68%, #010302);
+  background-size: 18px 18px, 18px 18px, auto, auto, auto;
+  box-shadow:
+    0 0 0 6px #030302,
+    0 0 34px rgba(240, 185, 58, 0.28),
+    inset 0 0 0 2px rgba(255, 231, 139, 0.2),
+    inset 0 0 58px rgba(0, 0, 0, 0.72);
+}
+
+.phone-frame.immersive {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 6px #030302,
+    0 0 34px rgba(240, 185, 58, 0.26),
+    inset 0 0 0 2px rgba(255, 231, 139, 0.18),
+    inset 0 0 58px rgba(0, 0, 0, 0.72);
+}
+
+.crt-layer {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 231, 139, 0.055) 0,
+      rgba(255, 231, 139, 0.055) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  opacity: 0.55;
+}
+
+.crt-layer::before {
+  background-image:
+    radial-gradient(circle, rgba(255, 231, 139, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69, 226, 118, 0.035) 1px, transparent 1px);
+  background-size: 42px 45px, 28px 28px;
+  opacity: 0.32;
+}
+
+.screen-body,
+.immersive-body {
+  padding: 10px 10px 64px;
+}
+
+.immersive-body {
+  padding-bottom: 118px;
+}
+
+.room-top {
+  padding: 10px 10px 0;
+  background:
+    linear-gradient(180deg, rgba(2, 7, 5, 0.96), rgba(2, 7, 5, 0.72));
+}
+
+.pixel-panel {
+  border: 2px solid rgba(240, 185, 58, 0.78);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 231, 139, 0.09), transparent 28%),
+    linear-gradient(180deg, rgba(11, 42, 22, 0.96), rgba(3, 17, 10, 0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.16),
+    inset 0 0 22px rgba(69, 226, 118, 0.06),
+    0 0 0 1px rgba(44, 22, 4, 0.96),
+    0 0 18px rgba(240, 185, 58, 0.13);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+}
+
+.pixel-panel::before,
+.pixel-panel::after {
+  width: 8px;
+  height: 8px;
+  background: var(--gold-bright);
+  box-shadow:
+    0 0 0 1px #7a4d10,
+    0 0 12px rgba(255, 231, 139, 0.7);
+}
+
+h1 {
+  color: var(--gold-bright);
+  font-size: 29px;
+  text-align: center;
+  text-shadow:
+    2px 2px 0 #6c3d09,
+    0 0 16px rgba(255, 231, 139, 0.64);
+}
+
+h2,
+h3,
+.section-title span {
+  color: var(--gold-bright);
+  text-shadow: 1px 1px 0 #55320a;
+}
+
+p,
+.stock-row small,
+.position-cell small,
+.stat-cell small,
+.shares-label,
+.wallet-grid span,
+.tag,
+.voice-strip span {
+  color: var(--muted);
+}
+
+.eyebrow,
+.section-title b,
+.rise,
+.tag.up,
+.vol-low,
+.wallet-positions-head,
+.flow-step span,
+.lesson-card > span,
+.rank-row span {
+  color: var(--emerald);
+}
+
+.fall,
+.tag.down,
+.risk-dot,
+.vol-high {
+  color: var(--red);
+}
+
+.tag.watch,
+.vol-mid,
+.heat-chip {
+  color: var(--gold-bright);
+}
+
+.primary-button,
+.secondary-button,
+.text-link,
+.timer-button,
+.market-bottom-nav button,
+.bottom-nav button,
+.room-subnav button,
+.sector-tabs button,
+.shares-control button,
+.shares-quick button,
+.chat-input button,
+.agent-risk button,
+.agent-tabs button,
+.agent-close {
+  border: 2px solid rgba(240, 185, 58, 0.72);
+  border-radius: 0;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+
+.primary-button,
+.chat-input button,
+.bottom-nav button.active,
+.market-bottom-nav button.active,
+.room-subnav button.active,
+.sector-tabs button.active,
+.agent-risk button.active {
+  color: #281703;
+  background:
+    linear-gradient(180deg, #ffe78b 0%, #f0b93a 55%, #a66b16 100%);
+  border-color: var(--gold-bright);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 210, 0.38),
+    0 3px 0 #5a3509,
+    0 0 16px rgba(240, 185, 58, 0.3);
+  text-shadow: 0 1px 0 rgba(255, 242, 160, 0.65);
+}
+
+.secondary-button,
+.text-link,
+.timer-button,
+.voice-button,
+.sector-tabs button,
+.shares-control button,
+.shares-quick button,
+.room-subnav button,
+.agent-risk button,
+.agent-tabs button,
+.agent-close {
+  color: var(--gold-bright);
+  background:
+    linear-gradient(180deg, rgba(12, 58, 28, 0.9), rgba(3, 21, 11, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(69, 226, 118, 0.12),
+    0 2px 0 rgba(68, 42, 7, 0.85);
+}
+
+.secondary-button:active,
+.primary-button:active,
+.voice-button:active,
+.bottom-nav button:active,
+.market-bottom-nav button:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 210, 0.24),
+    0 1px 0 #5a3509;
+}
+
+.hero-panel,
+.cg-panel,
+.learn-panel,
+.finale-hero,
+.tavern-stage {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 231, 139, 0.14), transparent 26%),
+    linear-gradient(180deg, rgba(10, 44, 22, 0.98), rgba(3, 16, 9, 0.98));
+}
+
+.hero-panel {
+  min-height: 188px;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-panel::after,
+.finale-hero::after {
+  content: '';
+  display: block;
+  height: 34px;
+  margin-top: 10px;
+  background:
+    linear-gradient(var(--gold) 0 0) 18% 70% / 28px 12px no-repeat,
+    linear-gradient(var(--gold) 0 0) 27% 52% / 8px 28px no-repeat,
+    linear-gradient(var(--emerald) 0 0) 72% 54% / 7px 30px no-repeat,
+    linear-gradient(var(--red) 0 0) 78% 62% / 7px 22px no-repeat,
+    linear-gradient(var(--gold-bright) 0 0) 84% 48% / 7px 36px no-repeat;
+  image-rendering: pixelated;
+  opacity: 0.8;
+}
+
+.room-code,
+.trade-summary,
+.wallet-pos-row,
+.rank-row,
+.flow-step,
+.report-compact p,
+.report-list p,
+.voice-strip,
+.detail-note {
+  border-color: rgba(240, 185, 58, 0.28);
+}
+
+.rule-grid div,
+.badge-grid span,
+.wallet-grid span,
+.wallet-grid strong,
+.market-metrics div,
+.position-cell,
+.stat-cell,
+.trade-form,
+.news-card,
+.history-card,
+.stock-row,
+.room-gate-grid button,
+.podium-place,
+.player-card,
+.tavern-speech-panel,
+.agent-bubble,
+.user-bubble {
+  border: 1px solid rgba(240, 185, 58, 0.42);
+  background:
+    linear-gradient(180deg, rgba(9, 39, 20, 0.86), rgba(2, 14, 8, 0.92));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.06),
+    inset 0 0 18px rgba(69, 226, 118, 0.035);
+}
+
+.rule-grid strong,
+.market-metrics strong,
+.stock-row b,
+.wallet-grid strong,
+.wallet-pos-name b,
+.wallet-pos-val b,
+.stat-cell b,
+.position-cell b,
+.podium-place span {
+  color: var(--gold-bright);
+}
+
+.stock-row,
+.stock-page-list .stock-row {
+  min-height: 76px;
+  padding: 10px;
+  border-color: rgba(240, 185, 58, 0.46);
+}
+
+.stock-row:hover,
+.stock-row.active,
+.player-card.active,
+.tavern-side-list .tavern-seat.active {
+  border-color: var(--gold-bright);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.2),
+    0 0 16px rgba(240, 185, 58, 0.18);
+}
+
+.stock-meta em,
+.risk-dot {
+  border-color: rgba(240, 185, 58, 0.42);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.candles {
+  border-color: rgba(240, 185, 58, 0.44);
+  background:
+    linear-gradient(rgba(240, 185, 58, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 185, 58, 0.07) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(69, 226, 118, 0.05), transparent 56%),
+    rgba(1, 9, 5, 0.72);
+  background-size: 24px 24px, 24px 24px, auto, auto;
+}
+
+.candle-up .candle-wick,
+.candle-up .candle-body {
+  background: var(--emerald);
+}
+
+.candle-up .candle-body {
+  box-shadow: 0 0 8px rgba(69, 226, 118, 0.55);
+}
+
+.candle-down .candle-wick,
+.candle-down .candle-body {
+  background: var(--red);
+}
+
+.candle-down .candle-body {
+  box-shadow: 0 0 8px rgba(255, 107, 69, 0.48);
+}
+
+.market-bottom-nav,
+.bottom-nav {
+  border: 2px solid rgba(240, 185, 58, 0.72);
+  background:
+    linear-gradient(180deg, rgba(8, 34, 19, 0.95), rgba(2, 9, 6, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.14),
+    0 0 24px rgba(240, 185, 58, 0.16);
+}
+
+.bottom-nav button,
+.market-bottom-nav button {
+  color: var(--muted);
+  background: rgba(2, 12, 7, 0.58);
+}
+
+.stopwatch {
+  width: 186px;
+  border-color: rgba(240, 185, 58, 0.72);
+  background:
+    linear-gradient(180deg, rgba(15, 61, 31, 0.92), rgba(2, 15, 8, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.12),
+    0 0 18px rgba(240, 185, 58, 0.18);
+}
+
+.stopwatch strong {
+  color: var(--gold-bright);
+  text-shadow: 0 0 14px rgba(255, 231, 139, 0.58);
+}
+
+.stopwatch span,
+.stopwatch small {
+  color: var(--muted);
+}
+
+.tavern-avatar-layout {
+  grid-template-columns: 78px minmax(0, 1fr) 78px;
+}
+
+.player-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.player-card {
+  min-height: 86px;
+  grid-template-columns: 38px minmax(0, 1fr);
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  padding: 8px;
+}
+
+.player-card .mini-chart {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 18px;
+  opacity: 0.85;
+}
+
+.player-card p {
+  display: -webkit-box;
+  min-height: 31px;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.tavern-side-list .tavern-seat {
+  border-color: rgba(240, 185, 58, 0.48);
+  background:
+    linear-gradient(180deg, rgba(12, 48, 24, 0.92), rgba(2, 15, 8, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.08),
+    0 2px 0 #2e1c06;
+}
+
+.tavern-side-list .seat-number {
+  color: #261704;
+  background:
+    linear-gradient(180deg, var(--gold-bright), var(--gold));
+}
+
+.tavern-side-list .seat-avatar,
+.avatar,
+.large-avatar {
+  border-color: var(--gold);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 231, 139, 0.18), transparent 45%),
+    #06120b;
+  color: var(--gold-bright);
+  box-shadow:
+    0 0 0 1px rgba(69, 226, 118, 0.22),
+    0 0 12px rgba(240, 185, 58, 0.2);
+}
+
+.tavern-side-list .tavern-seat.active .seat-avatar,
+.avatar.warn,
+.agent-avatar {
+  border-color: var(--emerald);
+  color: var(--emerald);
+  box-shadow:
+    0 0 0 2px rgba(69, 226, 118, 0.14),
+    0 0 16px rgba(69, 226, 118, 0.36);
+}
+
+.seat-ready {
+  color: var(--emerald);
+}
+
+.tavern-speech-panel {
+  min-height: 380px;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(69, 226, 118, 0.08), transparent 35%),
+    linear-gradient(180deg, rgba(6, 31, 16, 0.75), rgba(1, 9, 5, 0.82));
+}
+
+.voice-button {
+  border: 2px solid rgba(69, 226, 118, 0.74);
+  color: var(--emerald);
+}
+
+.voice-button.active {
+  color: #05200e;
+  background: linear-gradient(180deg, #88ffa5, var(--emerald));
+  box-shadow: 0 0 18px rgba(69, 226, 118, 0.36);
+}
+
+.mini-chart polyline {
+  stroke: var(--emerald);
+}
+
+.round-progress i {
+  border-color: rgba(240, 185, 58, 0.4);
+  background: rgba(2, 12, 7, 0.72);
+}
+
+.round-progress i.done {
+  border-color: var(--gold-bright);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  box-shadow: 0 0 12px rgba(240, 185, 58, 0.42);
+}
+
+.agent-float {
+  border: 2px solid rgba(240, 185, 58, 0.66);
+  color: var(--gold-bright);
+  background:
+    linear-gradient(180deg, rgba(12, 48, 24, 0.92), rgba(2, 15, 8, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.12),
+    0 0 16px rgba(240, 185, 58, 0.2);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+
+.agent-team-icon span:nth-child(1),
+.agent-team-icon span:nth-child(2),
+.agent-team-icon span:nth-child(3),
+.tab-pixel-person,
+.tab-pixel-person.feng {
+  color: var(--gold-bright);
+}
+
+.tab-pixel-person.duan {
+  color: var(--emerald);
+}
+
+.tab-pixel-person.undercover {
+  color: var(--red);
+}
+
+.agent-chat {
+  border-color: rgba(240, 185, 58, 0.82);
+  background:
+    linear-gradient(rgba(240, 185, 58, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 185, 58, 0.03) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(8, 34, 18, 0.99), rgba(1, 8, 5, 0.99));
+  background-size: 22px 22px, 22px 22px, auto;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 231, 139, 0.1),
+    0 0 28px rgba(240, 185, 58, 0.24);
+}
+
+.agent-tabs button.active {
+  color: #281703;
+  background: linear-gradient(180deg, #ffe78b, #f0b93a);
+  border-color: var(--gold-bright);
+}
+
+.agent-tabs button.active .tab-pixel-person {
+  color: #281703;
+}
+
+.agent-head {
+  border-bottom-color: rgba(240, 185, 58, 0.28);
+}
+
+.agent-head strong,
+.markdown-message strong,
+.tavern-current-player strong,
+.suspect strong,
+.rank-row b {
+  color: var(--gold-bright);
+}
+
+.markdown-message h3 {
+  color: var(--emerald);
+}
+
+.user-bubble {
+  border-color: rgba(240, 185, 58, 0.58);
+  background:
+    linear-gradient(180deg, rgba(56, 34, 8, 0.92), rgba(18, 11, 3, 0.94));
+}
+
+.chat-input {
+  border-top-color: rgba(240, 185, 58, 0.28);
+}
+
+.chat-input input,
+.shares-control input {
+  border-color: rgba(240, 185, 58, 0.44);
+  background: rgba(1, 9, 5, 0.82);
+  color: var(--paper);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .phone-frame {
+    border-width: 0;
+    border-radius: 0;
+  }
+}
+
+/* Raster arcade asset pass */
+.app-shell {
+  padding: 22px;
+  background:
+    radial-gradient(circle at 50% 2%, rgba(255, 217, 90, 0.12), transparent 22%),
+    linear-gradient(180deg, #030503, #000);
+}
+
+.phone-frame {
+  width: min(448px, 100%);
+  height: min(952px, calc(100svh - 44px));
+  padding: 12px 10px 14px;
+  border: 10px solid #0a0b09;
+  border-radius: 38px;
+  outline: 2px solid rgba(255, 231, 139, 0.38);
+  background:
+    linear-gradient(rgba(255, 210, 70, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 210, 70, 0.026) 1px, transparent 1px),
+    url('./assets/arcade/market-skyline-cutout.png') center bottom 72px / 120% auto no-repeat,
+    linear-gradient(180deg, #06130b 0%, #020604 70%, #010201 100%);
+  box-shadow:
+    inset 0 0 0 2px #1d211a,
+    inset 0 0 0 5px #000,
+    0 0 0 2px #2a2d25,
+    0 26px 70px rgba(0, 0, 0, 0.7),
+    0 0 38px rgba(240, 185, 58, 0.26);
+}
+
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  z-index: 30;
+  top: 7px;
+  left: 50%;
+  width: 112px;
+  height: 18px;
+  border-radius: 0 0 16px 16px;
+  background:
+    radial-gradient(circle at 80% 45%, #171c16 0 3px, #030403 4px 6px, transparent 7px),
+    linear-gradient(180deg, #050605, #131611);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.phone-frame::after {
+  content: '';
+  position: absolute;
+  inset: 18px 11px 18px;
+  z-index: 0;
+  border: 2px solid rgba(240, 185, 58, 0.55);
+  border-radius: 24px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 139, 0.12),
+    inset 0 0 28px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.screen-body,
+.room-top,
+.market-bottom-nav,
+.bottom-nav,
+.agent-float,
+.agent-chat {
+  z-index: 2;
+}
+
+.screen-body,
+.immersive-body {
+  padding: 14px 12px 86px;
+}
+
+.immersive-body {
+  padding-bottom: 134px;
+}
+
+.pixel-panel {
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #fff2a7, #b57217 28%, #ffe78b 50%, #6c430b 76%, #fff2a7) 2;
+  background:
+    url('./assets/arcade/panel-metal.png') center / 100% 100% repeat,
+    linear-gradient(180deg, rgba(9, 39, 20, 0.96), rgba(1, 13, 7, 0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 232, 128, 0.15),
+    inset 0 0 22px rgba(69, 226, 118, 0.08),
+    0 3px 0 #2d1b05,
+    0 0 16px rgba(240, 185, 58, 0.14);
+}
+
+.pixel-panel::before,
+.pixel-panel::after {
+  width: 34px;
+  height: 34px;
+  background: url('./assets/arcade/ornate-corner-top-cutout.png') center / contain no-repeat;
+  box-shadow: none;
+}
+
+.pixel-panel::before {
+  top: -9px;
+  left: -9px;
+}
+
+.pixel-panel::after {
+  right: -9px;
+  bottom: -9px;
+  transform: rotate(180deg);
+}
+
+.cg-panel {
+  min-height: 82px;
+  padding-left: 74px;
+}
+
+.cg-panel::before {
+  background: url('./assets/arcade/lantern-gold-cutout.png') center / contain no-repeat;
+  width: 54px;
+  height: 74px;
+  top: 4px;
+  left: 10px;
+}
+
+.hero-panel {
+  min-height: 248px;
+  justify-content: end;
+  padding-top: 108px;
+  background:
+    linear-gradient(180deg, rgba(2, 10, 6, 0.06), rgba(2, 10, 6, 0.9) 58%),
+    url('./assets/arcade/bull-statue-cutout.png') center 4px / 78% auto no-repeat,
+    url('./assets/arcade/market-skyline-cutout.png') center top / 112% auto no-repeat,
+    linear-gradient(180deg, rgba(9, 39, 20, 0.96), rgba(1, 13, 7, 0.98));
+}
+
+.hero-panel::after {
+  height: 32px;
+  margin-top: 8px;
+  background: url('./assets/arcade/coin-pile-cutout.png') center / auto 100% no-repeat;
+  opacity: 0.92;
+}
+
+.room-code {
+  padding: 7px 10px;
+  border: 1px solid rgba(240, 185, 58, 0.48);
+  background: rgba(1, 12, 7, 0.75);
+}
+
+h1 {
+  color: #fff0a5;
+  font-size: 33px;
+  text-shadow:
+    2px 2px 0 #714404,
+    4px 4px 0 #1e1000,
+    0 0 18px rgba(255, 231, 139, 0.68);
+}
+
+h2 {
+  font-size: 18px;
+}
+
+.primary-button,
+.chat-input button,
+.bottom-nav button.active,
+.market-bottom-nav button.active,
+.room-subnav button.active,
+.sector-tabs button.active,
+.agent-risk button.active {
+  background:
+    url('./assets/arcade/button-gold.png') center / 100% 100% no-repeat,
+    linear-gradient(180deg, #ffe78b, #b87315);
+  border-color: transparent;
+  color: #2b1700;
+  min-height: 42px;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(255, 246, 183, 0.75);
+}
+
+.secondary-button,
+.voice-button,
+.text-link,
+.timer-button,
+.room-subnav button,
+.sector-tabs button,
+.agent-tabs button,
+.agent-risk button,
+.shares-control button,
+.shares-quick button {
+  background:
+    url('./assets/arcade/button-green.png') center / 100% 100% no-repeat,
+    linear-gradient(180deg, #105625, #04160a);
+  border-color: transparent;
+  color: #ffe78b;
+}
+
+.agent-close,
+.chat-input input,
+.shares-control input {
+  background:
+    url('./assets/arcade/button-dark.png') center / 100% 100% no-repeat,
+    rgba(1, 9, 5, 0.88);
+}
+
+.rule-grid div,
+.badge-grid span,
+.wallet-grid span,
+.wallet-grid strong,
+.market-metrics div,
+.position-cell,
+.stat-cell,
+.trade-form,
+.news-card,
+.history-card,
+.stock-row,
+.room-gate-grid button,
+.podium-place,
+.player-card,
+.agent-bubble,
+.user-bubble {
+  background:
+    url('./assets/arcade/dot-panel.png') center / 100% 100% repeat,
+    linear-gradient(180deg, rgba(9, 39, 20, 0.9), rgba(1, 13, 7, 0.96));
+  border-color: rgba(240, 185, 58, 0.55);
+}
+
+.flow-step {
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid rgba(240, 185, 58, 0.28);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.flow-step span {
+  display: inline-grid;
+  width: 32px;
+  height: 28px;
+  place-items: center;
+  background: url('./assets/arcade/square-gold.png') center / 100% 100% no-repeat;
+  color: #251601;
+}
+
+.tavern-stage {
+  min-height: 122px;
+  padding-inline: 58px;
+}
+
+.tavern-stage::before {
+  background: url('./assets/arcade/lantern-gold-cutout.png') center / contain no-repeat;
+  width: 46px;
+  height: 82px;
+  top: 12px;
+  left: 12px;
+}
+
+.tavern-stage::after {
+  background: url('./assets/arcade/lantern-green-cutout.png') center / contain no-repeat;
+  width: 46px;
+  height: 82px;
+  top: 12px;
+  right: 12px;
+  transform: none;
+}
+
+.player-card {
+  position: relative;
+  min-height: 102px;
+  padding: 8px 8px 8px 7px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: url('./assets/arcade/square-gold.png') center / 100% 100% no-repeat;
+  box-shadow: none;
+  padding: 4px;
+}
+
+.avatar img,
+.large-avatar img {
+  border-radius: 0;
+  image-rendering: pixelated;
+}
+
+.player-card .avatar {
+  width: 54px;
+  height: 54px;
+}
+
+.player-card strong {
+  color: #ffe78b;
+  font-size: 15px;
+}
+
+.player-card.active {
+  background:
+    url('./assets/arcade/scan-panel.png') center / 100% 100% repeat,
+    linear-gradient(180deg, rgba(14, 74, 33, 0.95), rgba(1, 18, 9, 0.98));
+}
+
+.voice-strip {
+  padding: 12px 0 0;
+}
+
+.voice-button {
+  min-height: 48px;
+  padding-left: 54px;
+  background:
+    url('./assets/arcade/icon-mic-cutout.png') left 8px center / 38px 38px no-repeat,
+    url('./assets/arcade/button-green.png') center / 100% 100% no-repeat;
+}
+
+.voice-button.active {
+  background:
+    url('./assets/arcade/icon-mic-cutout.png') left 8px center / 38px 38px no-repeat,
+    url('./assets/arcade/button-gold.png') center / 100% 100% no-repeat;
+}
+
+.stock-row {
+  position: relative;
+  padding-left: 58px;
+}
+
+.stock-row::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 38px;
+  height: 38px;
+  background: url('./assets/arcade/square-green.png') center / 100% 100% no-repeat;
+  transform: translateY(-50%);
+}
+
+.stock-row:nth-child(3n)::before {
+  background-image: url('./assets/arcade/square-gold.png');
+}
+
+.stock-row:nth-child(4n)::before {
+  background-image: url('./assets/arcade/icon-fire-cutout.png');
+}
+
+.stock-quote::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('./assets/arcade/icon-fire-cutout.png') center / contain no-repeat;
+}
+
+.page-head {
+  position: relative;
+  overflow: visible;
+}
+
+.page-head::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: -10px;
+  width: 72px;
+  height: 62px;
+  background: url('./assets/arcade/ornate-corner-mid-cutout.png') center / contain no-repeat;
+  pointer-events: none;
+}
+
+.detail-panel::before {
+  background: url('./assets/arcade/ornate-corner-mid-cutout.png') center / contain no-repeat;
+}
+
+.candles {
+  background:
+    linear-gradient(rgba(240, 185, 58, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 185, 58, 0.07) 1px, transparent 1px),
+    url('./assets/arcade/market-skyline-cutout.png') center bottom / 115% auto no-repeat,
+    rgba(1, 9, 5, 0.78);
+}
+
+.wallet-float {
+  background:
+    url('./assets/arcade/coin-pile-cutout.png') center 4px / 52px auto no-repeat,
+    url('./assets/arcade/button-green.png') center / 100% 100% no-repeat;
+  padding-top: 50px;
+}
+
+.wallet-popover::after,
+.profile-panel::after,
+.learn-panel::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  width: 92px;
+  height: 72px;
+  background: url('./assets/arcade/treasure-chest-cutout.png') center / contain no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.finale-hero {
+  min-height: 142px;
+  padding-right: 150px;
+  background:
+    url('./assets/arcade/bull-statue-cutout.png') right bottom / 152px auto no-repeat,
+    url('./assets/arcade/market-skyline-cutout.png') center bottom / 100% auto no-repeat,
+    linear-gradient(180deg, rgba(9, 39, 20, 0.96), rgba(1, 13, 7, 0.98));
+}
+
+.finale-hero::after {
+  display: none;
+}
+
+.podium-place .avatar {
+  width: 58px;
+  height: 58px;
+}
+
+.agent-float {
+  width: 62px;
+  min-height: 62px;
+  padding: 38px 4px 5px;
+  background:
+    url('./assets/arcade/icon-trophy-cutout.png') center 3px / 40px 40px no-repeat,
+    url('./assets/arcade/button-green.png') center / 100% 100% no-repeat;
+}
+
+.agent-float b {
+  font-size: 8px;
+  line-height: 1.1;
+}
+
+.agent-team-icon {
+  display: none;
+}
+
+.agent-chat {
+  background:
+    url('./assets/arcade/market-skyline-cutout.png') center top / 100% auto no-repeat,
+    linear-gradient(rgba(240, 185, 58, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 185, 58, 0.03) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(8, 34, 18, 0.99), rgba(1, 8, 5, 0.99));
+}
+
+.agent-avatar {
+  background-image: url('./assets/arcade/icon-trophy-cutout.png');
+  background-size: contain;
+  color: transparent;
+}
+
+.bottom-nav button,
+.market-bottom-nav button {
+  min-height: 42px;
+  padding-top: 18px;
+  background:
+    url('./assets/arcade/square-dark.png') center 3px / 24px 24px no-repeat,
+    url('./assets/arcade/button-dark.png') center / 100% 100% no-repeat;
+}
+
+.bottom-nav button.active,
+.market-bottom-nav button.active {
+  background:
+    url('./assets/arcade/square-gold.png') center 3px / 24px 24px no-repeat,
+    url('./assets/arcade/button-gold.png') center / 100% 100% no-repeat;
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    padding: 10px;
+  }
+
+  .phone-frame {
+    width: 100%;
+    height: calc(100svh - 20px);
+    min-height: calc(100svh - 20px);
+    border: 10px solid #080908;
+    border-radius: 34px;
+    box-shadow:
+      inset 0 0 0 2px #1d211a,
+      inset 0 0 0 5px #000,
+      0 0 0 1px #2a2d25,
+      0 18px 44px rgba(0, 0, 0, 0.72);
+  }
+
+  .screen-body,
+  .immersive-body {
+    padding-inline: 10px;
+  }
+}
+
+/* Asset polish pass: keep sprites intentional instead of stretching them everywhere */
+.pixel-panel {
+  background:
+    linear-gradient(rgba(255, 231, 139, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69, 226, 118, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, rgba(255, 231, 139, 0.08), transparent 36%),
+    linear-gradient(180deg, rgba(8, 34, 18, 0.98), rgba(1, 12, 7, 0.99));
+  background-size: 4px 4px, 18px 18px, auto, auto;
+}
+
+.rule-grid div,
+.badge-grid span,
+.wallet-grid span,
+.wallet-grid strong,
+.market-metrics div,
+.position-cell,
+.stat-cell,
+.trade-form,
+.news-card,
+.history-card,
+.stock-row,
+.room-gate-grid button,
+.podium-place,
+.player-card,
+.agent-bubble,
+.user-bubble {
+  background:
+    linear-gradient(rgba(255, 231, 139, 0.025) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(9, 39, 20, 0.94), rgba(1, 13, 7, 0.98));
+  background-size: 4px 4px, auto;
+}
+
+.flow-step {
+  background:
+    linear-gradient(90deg, rgba(240, 185, 58, 0.08), transparent 46%),
+    rgba(2, 16, 8, 0.72);
+}
+
+.flow-step span {
+  background: none;
+  border: 1px solid rgba(240, 185, 58, 0.6);
+  color: var(--gold-bright);
+}
+
+.hero-panel {
+  background:
+    linear-gradient(180deg, rgba(2, 10, 6, 0.02), rgba(2, 10, 6, 0.9) 58%),
+    url('./assets/arcade/bull-statue-cutout.png') center 2px / 82% auto no-repeat,
+    url('./assets/arcade/market-skyline-cutout.png') center top / 112% auto no-repeat,
+    linear-gradient(180deg, rgba(9, 39, 20, 0.96), rgba(1, 13, 7, 0.98));
+}
+
+.rule-grid div {
+  position: relative;
+  min-height: 64px;
+  overflow: hidden;
+}
+
+.rule-grid div::after {
+  content: '';
+  position: absolute;
+  right: -14px;
+  bottom: -18px;
+  width: 72px;
+  height: 52px;
+  background: url('./assets/arcade/scan-panel.png') center / contain no-repeat;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.flow-panel::after {
+  width: 76px;
+  height: 76px;
+  right: -14px;
+  bottom: -16px;
+  background: url('./assets/arcade/market-skyline-cutout.png') right bottom / contain no-repeat;
+  opacity: 0.75;
+  transform: none;
+}
+
+/* Layout repair pass */
+.phone-frame {
+  background:
+    linear-gradient(rgba(255, 210, 70, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 210, 70, 0.026) 1px, transparent 1px),
+    linear-gradient(180deg, #06130b 0%, #020604 70%, #010201 100%);
+  background-size: 18px 18px, 18px 18px, auto;
+}
+
+.screen-body,
+.immersive-body {
+  padding: 12px 12px 94px;
+}
+
+.immersive-body {
+  overflow-y: auto;
+  padding-bottom: 120px;
+}
+
+.agent-float {
+  width: 48px;
+  min-height: 50px;
+  padding: 0;
+  background:
+    url('./assets/arcade/icon-trophy-cutout.png') center / 34px 34px no-repeat,
+    url('./assets/arcade/square-green.png') center / 100% 100% no-repeat;
+  opacity: 0.92;
+}
+
+.agent-float b {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.hero-panel {
+  min-height: 228px;
+  padding-top: 96px;
+}
+
+.hero-actions,
+.trade-actions {
+  gap: 10px;
+}
+
+.rule-grid div {
+  min-height: 58px;
+}
+
+.flow-panel {
+  padding-bottom: 12px;
+}
+
+.flow-step {
+  min-height: 38px;
+  padding: 6px 10px;
+}
+
+.tavern-stage {
+  min-height: 106px;
+  padding-inline: 52px;
+}
+
+.tavern-stage h2 {
+  font-size: 16px;
+}
+
+.tavern-stage p {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.player-grid {
+  gap: 7px;
+}
+
+.player-card {
+  min-height: 78px;
+  grid-template-columns: 50px minmax(0, 1fr);
+  grid-template-rows: auto;
+  padding: 7px;
+  align-items: center;
+  overflow: hidden;
+}
+
+.player-card .avatar {
+  width: 48px;
+  height: 48px;
+  padding: 3px;
+}
+
+.player-card strong {
+  display: block;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-card p {
+  min-height: 0;
+  margin-top: 4px;
+  font-size: 9px;
+  line-height: 1.3;
+  -webkit-line-clamp: 2;
+}
+
+.player-card .mini-chart {
+  display: none;
+}
+
+.detail-note,
+.voice-strip {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.report-compact p {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.tall-candles {
+  height: 218px;
+}
+
+.stat-grid,
+.position-row {
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.stat-cell,
+.position-cell {
+  padding: 6px 4px;
+}
+
+.trade-form {
+  margin-top: 8px;
+  padding: 8px;
+  gap: 7px;
+}
+
+.shares-quick {
+  gap: 4px;
+}
+
+.shares-quick button {
+  min-height: 26px;
+}
+
+.trade-actions {
+  margin-top: 8px;
+}
+
+.news-page-list .news-card {
+  min-height: 86px;
+}
+
+.learn-panel::after,
+.profile-panel::after,
+.wallet-popover::after {
+  width: 64px;
+  height: 52px;
+  opacity: 0.55;
+}
+
+.learn-panel,
+.profile-panel {
+  min-height: 100px;
+}
+
+.bottom-nav,
+.market-bottom-nav {
+  left: 18px;
+  right: 18px;
+  bottom: 20px;
+}
+
+@media (max-width: 520px) {
+  .phone-frame {
+    background:
+      linear-gradient(rgba(255, 210, 70, 0.026) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 210, 70, 0.026) 1px, transparent 1px),
+      linear-gradient(180deg, #06130b 0%, #020604 70%, #010201 100%);
+    background-size: 18px 18px, 18px 18px, auto;
+  }
+}
+
+/* Avatar overflow fix */
+.avatar,
+.large-avatar {
+  overflow: hidden;
+}
+
+.avatar > img,
+.large-avatar > img,
+.player-card .avatar > img,
+.suspect .avatar > img,
+.podium-place .avatar > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.player-card .avatar > img {
+  object-fit: cover;
+}
+
+.player-card.active {
+  background:
+    linear-gradient(90deg, rgba(69, 226, 118, 0.14), rgba(240, 185, 58, 0.06)),
+    linear-gradient(rgba(255, 231, 139, 0.025) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 52, 25, 0.96), rgba(1, 16, 8, 0.99));
+  background-size: auto, 4px 4px, auto;
+}

@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import './App.css'
 import { stocks, sectors, type Stock } from './stocks'
+import avatarAbin from './assets/arcade/avatar-abin.png'
+import avatarCat from './assets/arcade/avatar-cat.png'
+import avatarEdison from './assets/arcade/avatar-edison.png'
+import avatarStranger from './assets/arcade/avatar-stranger.png'
+import avatarWhereby from './assets/arcade/avatar-whereby.png'
+import avatarZheng from './assets/arcade/avatar-zheng.png'
 
 type MainView = 'learn' | 'room' | 'mine'
 type RoomView = 'lobby' | 'tavern' | 'market'
@@ -33,6 +39,7 @@ type Player = {
   id: string
   name: string
   avatar: string
+  avatarUrl?: string
   undercover?: boolean
   profit: number
   suspicion: number
@@ -46,6 +53,15 @@ const players: Player[] = [
   { id: 'p2', name: '李四', avatar: 'LS', profit: 12.8, suspicion: 18, speech: '先别急着喊股神，收盘再说。', move: '减仓新能源车，避开午后跳水。', trend: [31, 36, 39, 48, 55] },
   { id: 'p3', name: '王五', avatar: 'WW', undercover: true, profit: 2.4, suspicion: 68, speech: '市场传闻嘛，听听就好。', move: '利好出现前建仓，追入后减仓。', trend: [34, 35, 34, 36, 37] },
   { id: 'p4', name: '赵六', avatar: 'ZL', profit: -14.2, suspicion: 25, speech: '这把我先把节目效果拉满。', move: '连续两日跟风，账户曲线跳水。', trend: [45, 39, 31, 25, 21] },
+]
+
+const tavernPlayers: Player[] = [
+  { ...players[0], name: '猫。', avatarUrl: avatarCat },
+  { ...players[1], name: 'Edison', avatarUrl: avatarEdison },
+  { ...players[2], name: '陌生人', avatarUrl: avatarStranger },
+  { ...players[3], name: 'Whereby', avatarUrl: avatarWhereby },
+  { ...players[0], id: 'p5', name: '阿斌', avatar: 'AB', avatarUrl: avatarAbin, profit: 6.1, suspicion: 41, trend: [35, 38, 45, 44, 51] },
+  { ...players[1], id: 'p6', name: '郑航', avatar: 'ZH', avatarUrl: avatarZheng, profit: -3.7, suspicion: 22, trend: [48, 44, 42, 39, 36] },
 ]
 
 const news = [
@@ -290,10 +306,10 @@ function RoomLobby({ startGame }: { startGame: () => void }) {
 }
 
 function Tavern({ openModal }: { openModal: (view: ModalView) => void }) {
-  const [selectedPlayer, setSelectedPlayer] = useState(players[2])
+  const [selectedPlayer, setSelectedPlayer] = useState(tavernPlayers[2])
   const [speaking, setSpeaking] = useState(false)
   const [votedFor, setVotedFor] = useState<string | null>(null)
-  const suspect = useMemo(() => [...players].sort((a, b) => b.suspicion - a.suspicion)[0], [])
+  const suspect = useMemo(() => [...tavernPlayers].sort((a, b) => b.suspicion - a.suspicion)[0], [])
 
   return (
     <main className="screen-body immersive-body">
@@ -312,9 +328,11 @@ function Tavern({ openModal }: { openModal: (view: ModalView) => void }) {
           <b>轮到 {selectedPlayer.name}</b>
         </div>
         <div className="player-grid">
-          {players.map((player) => (
+          {tavernPlayers.map((player) => (
             <button className={`player-card ${selectedPlayer.id === player.id ? 'active' : ''}`} key={player.id} onClick={() => setSelectedPlayer(player)} type="button">
-              <div className="avatar">{player.avatar}</div>
+              <div className="avatar">
+                {player.avatarUrl ? <img src={player.avatarUrl} alt="" /> : player.avatar}
+              </div>
               <div>
                 <strong>{player.name}</strong>
                 <p>{player.speech}</p>
@@ -363,7 +381,9 @@ function Tavern({ openModal }: { openModal: (view: ModalView) => void }) {
           <b>最高 {suspect.suspicion}</b>
         </div>
         <div className="suspect">
-          <div className="avatar warn">{suspect.avatar}</div>
+          <div className="avatar warn">
+            {suspect.avatarUrl ? <img src={suspect.avatarUrl} alt="" /> : suspect.avatar}
+          </div>
           <div>
             <strong>{suspect.name}</strong>
             <p>{suspect.move}</p>
@@ -1102,8 +1122,8 @@ function AgentDock(props: AgentDockProps) {
     const frameRect = frame.getBoundingClientRect()
     const buttonRect = button.getBoundingClientRect()
     setFloatPosition({
-      x: 16,
-      y: Math.max(16, frameRect.height - buttonRect.height - 62),
+      x: Math.max(16, frameRect.width - buttonRect.width - 16),
+      y: 112,
     })
   }, [floatPosition])
 
